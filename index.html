@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mental Math">
+<title>Mental Math Drill</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#ffffff; --tint:#f5f7fc; --tint2:#eef2fa;
+  --ink:#0c1a3a; --ink2:#2a3756; --muted:#5f6b85; --rule:#e1e6f0; --rule2:#edf0f6;
+  --blue:#1f4fe0; --blue-d:#1638b8; --blue-s:#eef3ff; --blue-m:#d4dfff;
+  --good:#0b7a4b; --good-s:#e8f6ef; --bad:#c42b20; --bad-s:#fdeeec; --amber:#9a5b00; --amber-s:#fff5e3;
+  --key:#f1f4fb; --key-p:#dfe6f7;
+  --shadow:0 1px 2px rgba(12,26,58,.05), 0 2px 8px rgba(12,26,58,.04);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:"Source Sans 3",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit}
+.wrap{max-width:540px;margin:0 auto;padding:14px 16px 40px}
+.hidden{display:none!important}
+
+/* header */
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:4px 2px 12px}
+.stamp{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700}
+h1{font-family:Archivo,sans-serif;font-weight:700;font-size:25px;margin:3px 0 0;letter-spacing:-.015em}
+h2{font-family:Archivo,sans-serif;font-weight:700;font-size:18px;margin:22px 0 8px;letter-spacing:-.01em}
+.mark{width:34px;height:34px;border-radius:10px;background:var(--blue);display:grid;place-items:center;color:#fff;font:700 15px Archivo,sans-serif;flex:none}
+
+/* tabs */
+.tabs{display:flex;gap:3px;background:var(--tint);border:1px solid var(--rule2);border-radius:12px;padding:3px;margin-bottom:16px}
+.tab{flex:1;border:0;background:none;border-radius:9px;padding:8px 0;font:600 14px "Source Sans 3",sans-serif;color:var(--muted);cursor:pointer}
+.tab.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(12,26,58,.12)}
+
+/* generic */
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:18px 0 7px;display:flex;justify-content:space-between;align-items:center}
+.lbl .link{font-size:12px;letter-spacing:0;text-transform:none}
+.fine{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.4}
+.card{border:1px solid var(--rule);border-radius:14px;padding:14px;background:#fff;box-shadow:var(--shadow)}
+.link{background:none;border:0;color:var(--blue);font-weight:600;cursor:pointer;padding:0;font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;background:var(--blue);color:#fff;font:700 16px "Source Sans 3",sans-serif;padding:13px 16px;cursor:pointer;text-align:center}
+.btn:active{background:var(--blue-d)}
+.btn.cta{display:flex;width:100%;margin-top:22px;padding:15px;font-size:17px}
+.btn.sec{background:#fff;color:var(--blue);border:1.5px solid var(--blue-m)}
+.btn.sec:active{background:var(--blue-s)}
+.btn.ghost{background:none;color:var(--muted);font-weight:600}
+.btn.sm{padding:9px 13px;font-size:14px;border-radius:10px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+
+/* setup */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mcard{text-align:left;border:1.5px solid var(--rule);background:#fff;border-radius:14px;padding:11px 12px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-height:76px}
+.mcard b{font:700 16px Archivo,sans-serif}
+.mcard span{font-size:13px;color:var(--muted);line-height:1.3}
+.mcard.on{border-color:var(--blue);background:var(--blue-s)}
+.mcard.on b{color:var(--blue-d)}
+.seg{display:flex;background:var(--tint);border:1px solid var(--rule2);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:9px 2px;font:600 14px "Source Sans 3",sans-serif;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(12,26,58,.12)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--rule);background:#fff;border-radius:999px;padding:7px 12px;font:600 13.5px "Source Sans 3",sans-serif;color:var(--ink2);cursor:pointer}
+.chip.on{border-color:var(--blue);background:var(--blue-s);color:var(--blue-d)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding:12px 14px;border:1px solid var(--rule);border-radius:14px}
+.toggle b{font-weight:700}
+.toggle .fine{margin-top:2px}
+.switch{width:46px;height:28px;border-radius:14px;background:var(--rule);position:relative;border:0;cursor:pointer;flex:none;transition:background .15s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .15s}
+.switch.on{background:var(--blue)}
+.switch.on::after{left:21px}
+table.tol{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+table.tol th,table.tol td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--rule2);font-variant-numeric:tabular-nums}
+table.tol th:first-child,table.tol td:first-child{text-align:left}
+table.tol th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+table.tol tr.on td{color:var(--blue-d);font-weight:700;background:var(--blue-s)}
+.review{display:flex;justify-content:space-between;align-items:center;gap:12px;border-color:var(--blue-m);background:var(--blue-s);box-shadow:none;margin-bottom:4px}
+.rv-n{font:700 17px Archivo,sans-serif;margin-top:2px}
+
+/* drill */
+.topbar{display:flex;justify-content:space-between;align-items:center;min-height:30px}
+.barl{font-size:14px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.barl b{font:700 22px Archivo,sans-serif;color:var(--ink);margin-right:6px}
+.barl b.low{color:var(--bad)}
+.progress{height:4px;background:var(--rule2);border-radius:2px;margin:8px 0 16px;overflow:hidden}
+.progress>div{height:100%;background:var(--blue);width:0;transition:width .2s linear}
+.progress.warn>div{background:var(--bad)}
+.qmeta{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.pill{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--tint);border:1px solid var(--rule2);border-radius:999px;padding:2px 8px}
+.pill.blue{color:var(--blue-d);background:var(--blue-s);border-color:var(--blue-m)}
+.pill.good{color:var(--good);background:var(--good-s);border-color:#cfe9dc}
+.pill.bad{color:var(--bad);background:var(--bad-s);border-color:#f4d3cf}
+.pill.amber{color:var(--amber);background:var(--amber-s);border-color:#f2dfbf}
+.prompt{font:700 28px/1.18 Archivo,sans-serif;letter-spacing:-.015em}
+.prompt.long{font-size:21px}
+.sub{color:var(--muted);font-size:16px;margin-top:5px}
+.hints{margin-top:10px}
+.hints:empty{display:none}
+.hint{background:var(--amber-s);border:1px solid #f2dfbf;border-radius:10px;padding:8px 11px;font-size:14.5px;margin-top:6px;color:#5c3a00}
+.hint b{font-weight:700;color:var(--amber)}
+.answer{margin-top:14px;border:1.5px solid var(--rule);border-radius:14px;padding:10px 14px;display:flex;align-items:baseline;gap:6px;min-height:66px;background:#fff;box-shadow:var(--shadow);transition:border-color .12s,background .12s}
+.answer.active{border-color:var(--blue)}
+.answer .val{font:700 32px Archivo,sans-serif;flex:1;letter-spacing:-.01em;word-break:break-all;font-variant-numeric:tabular-nums}
+.answer .val.ph{color:#c3cbdb}
+.answer .pre,.answer .unit{font:600 22px Archivo,sans-serif;color:var(--muted)}
+.answer.ok{border-color:var(--good);background:var(--good-s)}
+.answer.no{border-color:var(--bad);background:var(--bad-s)}
+.verdict{font-weight:700;font-size:14.5px;margin-top:7px;min-height:21px}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+.tools{display:flex;gap:8px;margin-top:10px}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;user-select:none;-webkit-user-select:none}
+.pad button{border:0;border-radius:12px;background:var(--key);font:600 24px "Source Sans 3",sans-serif;height:58px;cursor:pointer;touch-action:manipulation;color:var(--ink)}
+.pad button:active{background:var(--key-p)}
+.pad .fn{font-size:16px;color:var(--ink2)}
+.pad .go{grid-column:span 2;background:var(--blue);color:#fff;font-size:19px;font-weight:700}
+.pad .go:active{background:var(--blue-d)}
+.talk{margin-top:12px;border:1.5px dashed var(--blue-m);border-radius:14px;padding:14px;background:var(--blue-s)}
+.talk p{margin:0 0 10px;font-size:15px;color:var(--ink2)}
+
+/* case panel */
+.case{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;margin-bottom:14px;background:var(--tint)}
+.case h3{font:700 16px Archivo,sans-serif;margin:3px 0 8px}
+.kv{display:grid;grid-template-columns:1fr auto 1fr auto;gap:3px 10px;font-size:13.5px}
+.kv.one{grid-template-columns:1fr auto}
+.kv span:nth-child(odd){color:var(--muted)}
+.kv span:nth-child(even){text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.known{margin-top:8px;border-top:1px solid var(--rule);padding-top:8px}
+
+/* solution */
+details.sol{margin-top:12px;border:1px solid var(--rule);border-radius:14px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+details.sol>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font:700 15px Archivo,sans-serif;color:var(--blue-d)}
+details.sol>summary::-webkit-details-marker{display:none}
+details.sol>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--blue);border-bottom:2px solid var(--blue);transform:rotate(45deg);margin-top:-4px;transition:transform .15s}
+details.sol[open]>summary::after{transform:rotate(225deg);margin-top:4px}
+.solb{padding:0 14px 14px}
+.soltop{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.soltop div{background:var(--tint);border-radius:10px;padding:8px 10px}
+.soltop span{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.soltop b{font:700 18px Archivo,sans-serif;font-variant-numeric:tabular-nums}
+.soltop small{display:block;font-size:12px;color:var(--muted);line-height:1.3;margin-top:2px}
+ol.steps{list-style:none;counter-reset:s;padding:0;margin:4px 0 0}
+ol.steps li{counter-increment:s;position:relative;padding:5px 0 5px 32px;font-size:15.5px;line-height:1.4;font-variant-numeric:tabular-nums}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:5px;width:22px;height:22px;border-radius:50%;background:var(--blue-s);color:var(--blue-d);font:700 12px/22px "Source Sans 3",sans-serif;text-align:center}
+.solb p{margin:4px 0 0;font-size:15px;color:var(--ink2)}
+.remember{margin-top:12px;background:var(--blue-s);border-left:3px solid var(--blue);border-radius:4px 10px 10px 4px;padding:9px 12px;font-size:15px;font-weight:600;color:var(--ink)}
+.remember .lbl{margin:0 0 3px;color:var(--blue-d)}
+.diag{margin-top:12px;background:var(--bad-s);border-radius:10px;padding:9px 12px;font-size:14.5px;color:#7a1a13}
+.diag b{color:var(--bad)}
+.gnote{margin-top:10px;font-size:13px;color:var(--muted)}
+.actions{display:flex;gap:8px;margin-top:14px}
+.actions .btn{flex:1}
+.actions .btn.flex2{flex:1.6}
+
+/* summary / progress */
+.big{font:700 44px Archivo,sans-serif;letter-spacing:-.02em;margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.kpis.four{grid-template-columns:repeat(2,1fr)}
+.kpis div{border:1px solid var(--rule);border-radius:12px;padding:10px 12px;background:#fff}
+.kpis b{display:block;font:700 22px Archivo,sans-serif;font-variant-numeric:tabular-nums}
+.kpis span{font-size:12.5px;color:var(--muted)}
+table.t{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px}
+table.t th,table.t td{padding:8px 6px;border-bottom:1px solid var(--rule2);text-align:right;font-variant-numeric:tabular-nums;vertical-align:top}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;border-bottom:1px solid var(--rule)}
+.diagbar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--rule2);margin-top:8px}
+.diagbar i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.c-concept{background:#c42b20}.c-accuracy{background:#e0a020}.c-speed{background:#1f4fe0}
+details.miss{border-bottom:1px solid var(--rule2)}
+details.miss>summary{list-style:none;cursor:pointer;padding:10px 0}
+details.miss>summary::-webkit-details-marker{display:none}
+details.miss .p{font-weight:700;font-size:15px}
+details.miss .m{font-size:13.5px;color:var(--muted);margin-top:2px}
+details.miss details.sol{margin:0 0 12px}
+.rec{margin-top:10px;font-size:15px;color:var(--ink2)}
+.spark{width:100%;height:64px;display:block;margin-top:6px}
+
+/* library */
+details.skill{border:1px solid var(--rule);border-radius:12px;margin-top:8px;background:#fff}
+details.skill>summary{list-style:none;cursor:pointer;padding:11px 13px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700;font-size:15px}
+details.skill>summary::-webkit-details-marker{display:none}
+details.skill[open]>summary{border-bottom:1px solid var(--rule2)}
+.skb{padding:4px 13px 13px}
+.skb .ex{margin-top:10px;background:var(--tint);border-radius:10px;padding:10px 12px}
+.skb .ex .q{font:700 17px Archivo,sans-serif}
+.skb .stat{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* anchors */
+.fracgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 12px;font-size:14.5px;font-variant-numeric:tabular-nums}
+.fracgrid div{display:flex;justify-content:space-between;border-bottom:1px solid var(--rule2);padding:5px 0}
+.fracgrid span:first-child{color:var(--muted)}
+.qbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+ul.rules{padding-left:18px;margin:6px 0 0}
+ul.rules li{margin:6px 0;font-size:15px}
+
+body.focus header{display:none}
+
+/* installed-app tweaks */
+html,body{overscroll-behavior:none;touch-action:manipulation}
+.wrap{padding-top:max(14px, env(safe-area-inset-top));padding-bottom:max(40px, calc(env(safe-area-inset-bottom) + 24px));padding-left:max(16px, env(safe-area-inset-left));padding-right:max(16px, env(safe-area-inset-right))}
+button{-webkit-user-select:none;user-select:none}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><div class="stamp">PE / IB interview math</div><h1>Mental Math Drill</h1></div>
+    <div class="mark" aria-hidden="true">%</div>
+  </header>
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-act="tab" data-v="train">Train</button>
+    <button class="tab" data-act="tab" data-v="lib">Shortcuts</button>
+    <button class="tab" data-act="tab" data-v="anchors">Anchors</button>
+    <button class="tab" data-act="tab" data-v="progress">Progress</button>
+  </nav>
+
+  <section id="v-setup"></section>
+
+  <section id="v-drill" class="hidden">
+    <div class="topbar"><div class="barl" id="dBar"></div><button class="link" data-act="endSession">End session</button></div>
+    <div class="progress" id="dProgWrap"><div id="dProg"></div></div>
+    <div id="dCase" class="case hidden"></div>
+    <div class="qmeta"><span class="stamp" id="dCat"></span><span class="pill" id="dDiff"></span></div>
+    <div class="prompt" id="dPrompt"></div>
+    <div class="sub" id="dSub"></div>
+    <div class="hints" id="dHints"></div>
+    <div class="answer active" id="dAns"><span class="pre" id="dPre"></span><span class="val ph" id="dVal">0</span><span class="unit" id="dUnit"></span></div>
+    <div class="verdict" id="dVerdict"></div>
+    <div id="dPadWrap">
+      <div class="tools" id="dTools"></div>
+      <div class="talk hidden" id="dTalk">
+        <p><b>Talk it through.</b> Say your approach out loud: what's the first number you need, and what shortcut gets you there? Then answer. The clock is running.</p>
+        <button class="btn sm" data-act="talkDone">I have my answer</button>
+      </div>
+      <div class="pad" id="pad">
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="del" class="fn" aria-label="Delete">⌫</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="neg" class="fn" aria-label="Plus or minus">±</button>
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="skip" class="fn">Skip</button>
+        <button data-k="0">0</button><button data-k=".">.</button><button data-k="go" class="go">Check</button>
+      </div>
+    </div>
+    <div id="dAfter" class="hidden"></div>
+  </section>
+
+  <section id="v-summary" class="hidden"></section>
+  <section id="v-debrief" class="hidden"></section>
+  <section id="v-lib" class="hidden"></section>
+  <section id="v-anchors" class="hidden"></section>
+  <section id="v-progress" class="hidden"></section>
+</div>
+
+<script>
+"use strict";
+/* =========================================================================
+   ENGINE — question generators and the fastest-method solver.
+   Every answer is computed from the numbers; every method step is built
+   from the same numbers, so the explanation always matches the question.
+   ========================================================================= */
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const chance = p => Math.random() < p;
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; };
+const rnd = (x, dp = 2) => { const f = Math.pow(10, dp); return Math.round(x * f) / f; };
+function fmt(n, dp = 2) {
+  if (n === null || n === undefined || !isFinite(n)) return "—";
+  const v = rnd(n, dp);
+  const s = Math.abs(v).toLocaleString("en-US", { maximumFractionDigits: dp, minimumFractionDigits: 0 });
+  return (v < 0 ? "−" : "") + s;
+}
+const F = (n, dp = 3) => fmt(n, dp);
+const M = (n, dp = 1) => (n < 0 ? "−$" : "$") + fmt(Math.abs(n), dp) + "M";
+const X = (n, dp = 2) => fmt(n, dp) + "x";
+const only25 = d => { while (d % 2 === 0) d /= 2; while (d % 5 === 0) d /= 5; return d === 1; };
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const pts = x => `${F(x, 2)} pt${Math.abs(rnd(x, 3)) === 1 ? "" : "s"}`;
+const fx2 = n => n.toFixed(2);
+const prettyFrac = x => { const a = Math.abs(x); if (Math.abs(a - 1 / 3) < 1e-6) return "⅓"; if (Math.abs(a - 2 / 3) < 1e-6) return "⅔"; return F(a, 3); };
+
+const CATS = {
+  pct: "% of a number", frac: "Fractions → %", div: "Multiples & division", growth: "Growth & margins",
+  comp: "Compounding", ret: "MOIC ↔ IRR", bridge: "EV ↔ equity bridge", lbo: "Paper LBO steps", recall: "Anchor recall"
+};
+
+/* ---------- tolerance ---------- */
+const TOL = {
+  exact:     { pp: 0.1, rel: 0.005, bps: 1,  label: "Exact" },
+  tight:     { pp: 0.5, rel: 0.02,  bps: 5,  label: "Tight" },
+  interview: { pp: 1.0, rel: 0.05,  bps: 10, label: "Interview" }
+};
+const TOL_ORDER = ["exact", "tight", "interview"];
+function errOf(q, given) { return q.tol === "rel" ? Math.abs(given - q.answer) / Math.max(Math.abs(q.answer), q.floor || 0) : Math.abs(given - q.answer); }
+function within(q, given, level) { return errOf(q, given) <= TOL[level][q.tol] + 1e-9; }
+function effLevel(q, level) {
+  if (!q.minTol) return level;
+  return TOL_ORDER.indexOf(q.minTol) > TOL_ORDER.indexOf(level) ? q.minTol : level;
+}
+function grade(q, given, level) {
+  const L = effLevel(q, level);
+  if (given === null || given === undefined || !isFinite(given)) return { ok: false, err: null, level: L };
+  const err = errOf(q, given);
+  return { ok: err <= TOL[L][q.tol] + 1e-9, err, level: L };
+}
+
+/* ---------- question assembly ---------- */
+function mk(o, sol, answer) {
+  const unit = o.unit || "";
+  const q = {
+    gen: o.gen || null, diff: o.diff || 1, cat: o.cat, prompt: o.prompt, sub: o.sub || "",
+    answer, unit, pre: o.pre || "", tol: o.tol || (unit === "%" ? "pp" : unit === "bps" ? "bps" : "rel"),
+    dp: o.dp === undefined ? 2 : o.dp, skill: sol.skill, steps: sol.steps, why: sol.why, remember: sol.remember,
+    hints: sol.hints, target: sol.target === undefined ? null : sol.target, approx: !!sol.approx,
+    targetNote: sol.targetNote || null, floor: o.floor || 0, traps: (sol.traps || []).concat(o.traps || []), note: o.note || sol.note || null
+  };
+  if (q.approx && q.target !== null) {
+    q.minTol = TOL_ORDER.find(l => within(q, q.target, l)) || "interview";
+    if (!within(q, q.target, "interview")) q.wide = true;
+  }
+  return q;
+}
+function ansText(q, v) {
+  const x = v === undefined ? q.answer : v;
+  const u = q.unit === "%" ? "%" : q.unit === "x" ? "x" : q.unit === "M" ? "M" : q.unit ? " " + q.unit : "";
+  return (x < 0 && q.pre ? "−" + q.pre + fmt(-x, q.dp) : q.pre + fmt(x, q.dp)) + u;
+}
+
+/* =========================================================================
+   SOLVERS — pick the fastest reliable method for the actual numbers
+   ========================================================================= */
+const FRIEND = {
+  25: { t: "a quarter", f: p => `${p} ÷ 4 = ${F(p / 4)}` },
+  50: { t: "a half", f: p => `${p} ÷ 2 = ${F(p / 2)}` },
+  75: { t: "three quarters", f: p => `${p} ÷ 4 × 3 = ${F(p / 4)} × 3 = ${F(p * 0.75)}` },
+  20: { t: "a fifth", f: p => `${p} ÷ 5 = ${F(p / 5)}` },
+  40: { t: "two fifths", f: p => `${p} ÷ 5 × 2 = ${F(p / 5)} × 2 = ${F(p * 0.4)}` },
+  80: { t: "four fifths", f: p => `${p} − a fifth (${F(p / 5)}) = ${F(p * 0.8)}` },
+  125: { t: "one and a quarter", f: p => `${p} + a quarter (${F(p / 4)}) = ${F(p * 1.25)}` },
+  250: { t: "two and a half", f: p => `2 × ${p} + half of ${p} = ${F(2 * p)} + ${F(p / 2)} = ${F(p * 2.5)}` },
+  200: { t: "double", f: p => `2 × ${p} = ${F(2 * p)}` }
+};
+const FRACP = { 12.5: [1, 8], 37.5: [3, 8], 62.5: [5, 8], 87.5: [7, 8], 6.25: [1, 16], 18.75: [3, 16], 31.25: [5, 16], 25: [1, 4], 75: [3, 4], 50: [1, 2] };
+const NEAR = [[1, 8], [3, 8], [5, 8], [1, 3], [2, 3], [1, 6], [5, 6], [1, 4], [3, 4]];
+
+function nearRound(base, p) {
+  const step = base < 1000 ? 100 : 500;
+  const R = Math.round(base / step) * step;
+  if (R === base || R === 0) return null;
+  if (Math.abs(base - R) > Math.max(2, 0.015 * R)) return null;
+  if (!(R <= 1000 || p % 5 === 0 || R % 1000 === 0)) return null;
+  return R;
+}
+
+function pctSolve(p, base) {
+  const ans = p * base / 100, isInt = Number.isInteger(p);
+  const ten = base / 10, one = base / 100;
+  // 1. Flip: base is a friendly percentage
+  if (isInt && FRIEND[base] && p % 10 !== 0 && !FRACP[p] && p < 100) {
+    return { skill: "pct.flip",
+      steps: [`Flip it: ${p}% of ${F(base)} = ${F(base)}% of ${p}`, `${F(base)}% is ${FRIEND[base].t}: ${FRIEND[base].f(p)}`],
+      why: "Multiplication works in either order: p/100 × y = y/100 × p. Moving the friendly number into the percent slot turns the problem into a simple fraction.",
+      remember: "x% of y = y% of x. Flip whenever the base is a friendly percentage (20, 25, 50, 75, 125).",
+      hints: ["Look at the base number. Would it make a friendly percentage?", "x% of y equals y% of x.", `Work out ${F(base)}% of ${p} instead.`] };
+  }
+  // 2. Percent that is exactly a simple fraction
+  if (FRACP[p]) {
+    const [n, d] = FRACP[p];
+    const s = [`${F(p)}% = ${n}/${d}`, `${F(base)} ÷ ${d} = ${F(base / d, 4)}`];
+    if (n > 1) s.push(`× ${n} = ${F(ans, 4)}`);
+    return { skill: "pct.eighths", steps: s,
+      why: `${F(p)}% and ${n}/${d} are the same number. Dividing by ${d} is one clean operation; multiplying by ${p / 100} is not.`,
+      remember: "Eighths: 12.5 / 25 / 37.5 / 50 / 62.5 / 75 / 87.5%. Sixteenths step by 6.25%.",
+      hints: ["Is this percentage a simple fraction in disguise?", `${F(p)}% = ${n}/${d}.`, `Divide ${F(base)} by ${d}${n > 1 ? `, then multiply by ${n}` : ""}.`] };
+  }
+  // 3. Within 1 point of a fraction anchor, and the base divides cleanly
+  for (const [n, d] of NEAR) {
+    const a = n / d * 100, diff = p - a;
+    if (isInt && Math.abs(diff) <= 1.0001 && Math.abs(diff) > 1e-9 && base % d === 0) {
+      const av = base * n / d, adj = base * diff / 100;
+      return { skill: "pct.anchorAdj",
+        steps: [`${F(p)}% is just ${diff > 0 ? "above" : "below"} ${n}/${d} (${F(a, 2)}%)`, `${n}/${d} of ${F(base)} = ${F(av, 3)}`,
+          `Adjust ${diff > 0 ? "+" : "−"}${prettyFrac(diff)} pt${Math.abs(diff) === 1 ? "" : "s"}: ${prettyFrac(diff)}% of ${F(base)} = ${F(Math.abs(adj), 3)}`,
+          `${F(av, 3)} ${diff > 0 ? "+" : "−"} ${F(Math.abs(adj), 3)} = ${F(ans, 3)}`],
+        why: "The fraction does almost all the work in one clean division. The leftover sliver of a percent is small, so its correction is small and hard to get badly wrong.",
+        remember: "Near 12.5, 16⅔, 33⅓, 37.5, 62.5 or 66⅔%: take the fraction, then correct for the sliver.",
+        hints: ["Which simple fraction is this percentage close to?", `${F(p)}% is close to ${n}/${d}.`, `${n}/${d} of ${F(base)} is ${F(av, 3)}. Now adjust.`] };
+    }
+  }
+  // 4. Complement: close to 100%
+  if (p >= 85 && p < 100) {
+    const q = rnd(100 - p, 4), qv = base * q / 100;
+    return { skill: "pct.complement",
+      steps: [`${F(p)}% = 100% − ${F(q)}%`, `${F(q)}% of ${F(base)} = ${F(qv, 4)}${q >= 2 ? ` (1% = ${F(one, 4)})` : ""}`, `${F(base)} − ${F(qv, 4)} = ${F(ans, 4)}`],
+      why: "Taking a small piece away from the whole is less work than building a large percentage from scratch.",
+      remember: "Above ~85%, find the small missing piece and subtract it from the whole.",
+      hints: ["This percentage is close to 100%.", "Find the missing piece and subtract it.", `What is ${F(q)}% of ${F(base)}?`] };
+  }
+  // 5. Base close to a round number
+  const R = nearRound(base, p);
+  if (R && isInt) {
+    const pr = p * R / 100, dlt = base - R, corr = p * Math.abs(dlt) / 100;
+    return { skill: "pct.round",
+      steps: [`Round ${F(base)} to ${F(R)}: ${p}% of ${F(R)} = ${F(pr, 3)}`, `Correct for the ${F(Math.abs(dlt))} you ${dlt < 0 ? "added" : "removed"}: ${p}% of ${F(Math.abs(dlt))} = ${F(corr, 4)}`, `${F(pr, 3)} ${dlt < 0 ? "−" : "+"} ${F(corr, 4)} = ${F(ans, 4)}`],
+      why: "Percentages split across sums: p% of (R ± k) = p% of R ± p% of k. The round piece is easy and the correction is tiny.",
+      remember: "Round the base to something clean, then correct for what you added or removed.",
+      hints: ["Is the base close to a round number?", `Use ${F(R)} instead, then correct.`, `${p}% of ${F(R)} = ${F(pr, 3)}.`] };
+  }
+  // 6. Halving chain: multiples of 2.5
+  if ((p * 2) % 5 === 0 && p % 10 !== 0 && p < 100) {
+    const T = Math.floor(p / 10) * 10, rem = rnd(p - T, 4);
+    const s = [`10% of ${F(base)} = ${F(ten, 4)}`], parts = [];
+    if (T >= 10) { if (T > 10) s.push(`${T}% = ${T / 10} × ${F(ten, 4)} = ${F(base * T / 100, 4)}`); parts.push(base * T / 100); }
+    if (rem >= 5) { s.push(`5% = half of 10% = ${F(base * 0.05, 4)}`); parts.push(base * 0.05); }
+    if (rem === 2.5) { s.push(`2.5% = a quarter of 10% = ${F(base * 0.025, 4)}`); parts.push(base * 0.025); }
+    if (rem === 7.5) { s.push(`2.5% = half of 5% = ${F(base * 0.025, 4)}`); parts.push(base * 0.025); }
+    if (parts.length > 1) s.push(`Add: ${parts.map(v => F(v, 4)).join(" + ")} = ${F(ans, 4)}`);
+    return { skill: "pct.half", steps: s,
+      why: "Every multiple of 2.5% comes from 10% by halving: 10% → 5% → 2.5%. Halving is the easiest mental operation after shifting a decimal.",
+      remember: "Halving chain: 10% → 5% → 2.5%. 15% = 10% + 5%. 17.5% = 10% + 5% + 2.5%.",
+      hints: ["Build it from 10% using halves.", "10% → 5% → 2.5%, halving each time.", `10% of ${F(base)} is ${F(ten, 4)}.`] };
+  }
+  // 7. Building blocks
+  const T = Math.floor(p / 10) * 10, O = Math.floor(rnd(p - T, 6)), Fr = rnd(p - T - O, 4);
+  if (O >= 7 && Fr === 0 && T + 10 < 100) {
+    const T2 = T + 10, m = T2 - p;
+    return { skill: "pct.blocks",
+      steps: [`10% = ${F(ten, 4)}, 1% = ${F(one, 4)}`, `${T2}% = ${T2 / 10} × ${F(ten, 4)} = ${F(base * T2 / 100, 4)}`, `${m}% = ${m} × ${F(one, 4)} = ${F(base * m / 100, 4)}`, `${F(base * T2 / 100, 4)} − ${F(base * m / 100, 4)} = ${F(ans, 4)}`],
+      why: "Rounding the percent up to the next ten and subtracting a small piece needs fewer additions than building it up from below.",
+      remember: "When the ones digit is 7–9, round the percent up and subtract: 38% = 40% − 2%.",
+      hints: ["Is the percentage just below a multiple of 10?", `${p}% = ${T2}% − ${m}%.`, `10% of ${F(base)} = ${F(ten, 4)}; 1% = ${F(one, 4)}.`] };
+  }
+  const s = [`10% = ${F(ten, 4)}, 1% = ${F(one, 4)}`], parts = [];
+  if (T > 10) { s.push(`${T}% = ${T / 10} × ${F(ten, 4)} = ${F(base * T / 100, 4)}`); parts.push(base * T / 100); }
+  else if (T === 10) parts.push(ten);
+  if (O) { s.push(`${O}% = ${O} × ${F(one, 4)} = ${F(base * O / 100, 4)}`); parts.push(base * O / 100); }
+  if (Fr) { s.push(`${F(Fr)}% = ${Fr === 0.5 ? "half of 1%" : F(Fr) + " × 1%"} = ${F(base * Fr / 100, 4)}`); parts.push(base * Fr / 100); }
+  if (parts.length > 1) s.push(`Add: ${parts.map(v => F(v, 4)).join(" + ")} = ${F(ans, 4)}`);
+  return { skill: "pct.blocks", steps: s,
+    why: "Percent is linear: p% = tens% + ones%. 10% and 1% are just decimal shifts, so every piece is easy.",
+    remember: "10% = shift the decimal once; 1% = shift twice. Build every other percentage from those.",
+    hints: ["Split the percentage into tens and ones.", "Get 10% and 1% by shifting the decimal.", `10% of ${F(base)} = ${F(ten, 4)}; 1% = ${F(one, 4)}.`] };
+}
+
+const UNIT = { 3: 100 / 3, 6: 100 / 6, 7: 100 / 7, 8: 12.5, 9: 100 / 9, 11: 100 / 11, 12: 100 / 12, 16: 6.25 };
+const UNIT_NOTE = {
+  3: "1/3 = 33.33%", 6: "1/6 = 16.67% (half of 1/3)",
+  7: "1/7 = 14.29%. Sevenths run 14.29, 28.57, 42.86, 57.14, 71.43, 85.71",
+  8: "1/8 = 12.5%", 9: "1/9 = 11.11%. Ninths repeat the numerator: 4/9 = 44.44%",
+  11: "1/11 = 9.09%. Elevenths repeat 9 × the numerator: 3/11 = 27.27%",
+  12: "1/12 = 8.33% (a third of 25%)", 16: "1/16 = 6.25% (half of 12.5%)"
+};
+function fracSolve(n, d) {
+  const ans = n / d * 100, g = gcd(n, d);
+  if (g > 1) {
+    const a = n / g, b = d / g, inner = fracSolve(a, b);
+    return Object.assign({}, inner, { skill: "frac.simplify",
+      steps: [`Both divide by ${g}: ${n}/${d} = ${a}/${b}`].concat(inner.steps),
+      why: "Dividing top and bottom by the same number doesn't change the value, and a small familiar fraction converts instantly.",
+      remember: "Reduce before you divide. Big awkward fractions are often a familiar fraction in disguise.",
+      hints: ["Do the top and bottom share a factor?", `Both are divisible by ${g}.`, `${n}/${d} = ${a}/${b}.`] });
+  }
+  if (UNIT[d]) {
+    const s = [UNIT_NOTE[d]];
+    if (d === 9) s.push(`${n}/9 = 0.${String(n).repeat(3)}… = ${F(ans, 2)}%`);
+    else if (d === 11) { const r = String(9 * n).padStart(2, "0"); s.push(`${n}/11 = 0.${r}${r}… = ${F(ans, 2)}%`); }
+    else if (d === 7) s.push(`${n}/7 = ${F(ans, 2)}%`);
+    else s.push(`${n} × ${F(UNIT[d], 2)}% ${d === 8 || d === 16 ? "=" : "≈"} ${F(ans, 2)}%`);
+    if (n > d / 2 && d !== 9 && d !== 11 && d !== 7) s.push(`Or: 100% − ${d - n}/${d} (${F((d - n) / d * 100, 2)}%) = ${F(ans, 2)}%`);
+    return { skill: "frac.anchor", steps: s,
+      why: d === 8 || d === 16 ? "Eighths and sixteenths end cleanly, so the numerator times the unit is exact." : "These fractions never end, so memorize the unit fraction and scale it by the numerator. The repeating pattern makes it reliable.",
+      remember: UNIT_NOTE[d] + ".",
+      hints: [`Do you know 1/${d} as a percentage?`, UNIT_NOTE[d] + ".", `Multiply by ${n}.`] };
+  }
+  if (only25(d)) {
+    const m = 100 / d, s = d <= 100
+      ? [`Scale the bottom to 100: multiply top and bottom by ${F(m, 4)}`, `${n} × ${F(m, 4)} = ${F(n * m, 4)} → ${F(ans, 4)}%`]
+      : [`Scale the bottom to 100: divide top and bottom by ${F(d / 100, 4)}`, `${n} ÷ ${F(d / 100, 4)} = ${F(ans, 4)} → ${F(ans, 4)}%`];
+    return { skill: "frac.scale", steps: s,
+      why: "Denominators made only of 2s and 5s divide evenly into a power of 10, so the conversion is exact.",
+      remember: "Denominators like 20, 25, 40, 125 and 250: scale them to 100 and read the percent off the top.",
+      hints: ["Can the denominator be scaled to 100?", d <= 100 ? `Multiply top and bottom by ${F(m, 4)}.` : `Divide top and bottom by ${F(d / 100, 4)}.`, `${n} ${d <= 100 ? "× " + F(m, 4) : "÷ " + F(d / 100, 4)} = ?`] };
+  }
+  // Nearby clean fraction
+  let best = null;
+  for (let b = 2; b <= 12; b++) for (let a = 1; a < b; a++) {
+    if (gcd(a, b) !== 1) continue;
+    const ds = n * b / a;
+    if (!Number.isInteger(ds) || ds === d) continue;
+    const gap = Math.abs(ds - d) / d;
+    if (gap <= 0.06 && (!best || gap < best.gap)) best = { a, b, ds, gap };
+  }
+  if (best) {
+    const A = best.a / best.b * 100, ds = best.ds, up = ds > d, gp = Math.abs(ds - d) / d * 100;
+    return { skill: "frac.estimate",
+      steps: [`Nearby clean fraction: ${n}/${ds} = ${best.a}/${best.b} = ${F(A, 2)}%`,
+        `${d} is ${Math.abs(ds - d)} ${up ? "below" : "above"} ${ds}, which is ${F(gp, 1)}% of ${d}`,
+        `A ${up ? "smaller" : "larger"} denominator moves the result ${up ? "up" : "down"} by that share: ${F(A, 2)}% ${up ? "+" : "−"} ${pts(A * gp / 100)} = ${F(ans, 2)}%`],
+      target: rnd(ans, 1), targetNote: "Round to one decimal.",
+      why: `${n}/${d} = (${n}/${ds}) × (${ds}/${d}). The first part is a fraction you know. The second is just how far the denominator moved.`,
+      remember: "Find a nearby denominator that gives a clean fraction, then scale by how far the real denominator is from it.",
+      hints: ["Is there a denominator close to this one that gives a fraction you know?", `${n}/${ds} = ${best.a}/${best.b}.`, `Now adjust for ${d} vs ${ds}.`] };
+  }
+  const unit = n >= d / 10 ? 10 : 1, t = d * unit / 100, qn = Math.floor(n / t + 1e-9), r = n - qn * t;
+  return { skill: "frac.chunk",
+    steps: [`${unit}% of ${d} = ${F(t, 3)}`, `${F(t, 3)} × ${qn} = ${F(qn * t, 3)} → ${qn * unit}%`, `Remainder ${F(r, 3)} ÷ ${F(t, 3)} ≈ ${F(r / t, 2)} → another ${F(r / t * unit, 2)}%`, `≈ ${F(ans, 2)}%`],
+    target: rnd(ans, 1), targetNote: "Round to one decimal.",
+    why: `You're counting how many ${unit}% slices of the denominator fit into the numerator. It's long division with friendlier units.`,
+    remember: "Divide by 10% of the denominator. The answer comes out directly in tens of percent.",
+    hints: ["No clean fraction nearby. Count slices of the denominator instead.", `${unit}% of ${d} is ${F(t, 3)}.`, `How many ${F(t, 3)}s fit into ${n}?`] };
+}
+
+function divSolve(num, den, dp) {
+  const ans = num / den;
+  if (Math.abs(ans - Math.round(ans)) < 1e-9) {
+    const q = Math.round(ans);
+    return { skill: "div.chunk", steps: [`${F(den)} × ${q} = ${F(num)} exactly → ${q}`],
+      why: "When the divisor goes in a whole number of times, spotting the multiple is the whole job.",
+      remember: "Whole multiples first (EBITDA × n), then the remainder as a fraction of EBITDA.",
+      hints: ["Estimate how many whole times it fits.", `Try ${F(den)} × ${q}.`, `${F(den)} × ${q} = ?`] };
+  }
+  const step = den < 55 ? 10 : 100, Rd = Math.round(den / step) * step;
+  if (Rd !== den && Rd > 0 && Math.abs(Rd - den) / den <= 0.04) {
+    const q0 = num / Rd, up = Rd > den, gp = Math.abs(Rd - den) / den;
+    return { skill: "div.round",
+      steps: [`Round ${F(den)} to ${F(Rd)}: ${F(num)} ÷ ${F(Rd)} = ${F(q0, 3)}`,
+        `${F(den)} is ${F(Math.abs(Rd - den))} ${up ? "below" : "above"} ${F(Rd)}, which is ${F(gp * 100, 1)}% of ${F(den)}`,
+        `A ${up ? "smaller" : "larger"} divisor moves the answer ${up ? "up" : "down"} by that share: ${F(q0, 3)} ${up ? "+" : "−"} ${F(q0 * gp, 3)} = ${F(ans, dp)}`],
+      why: `${F(num)} ÷ ${F(den)} = (${F(num)} ÷ ${F(Rd)}) × (${F(Rd)} ÷ ${F(den)}). Dividing by the round number is easy; the second factor is just the gap between the two divisors.`,
+      remember: "Divide by a round neighbor, then move the answer by the same percentage the divisor moved, in the opposite direction.",
+      hints: ["Is the divisor close to a round number?", `Divide by ${F(Rd)} first.`, `${F(num)} ÷ ${F(Rd)} = ${F(q0, 3)}. Now adjust.`] };
+  }
+  const q = Math.floor(ans + 1e-9), rem = num - q * den, fr = rem / den;
+  let note = "", bestF = null;
+  for (const [a, b] of [[1, 10], [1, 8], [1, 6], [1, 5], [1, 4], [1, 3], [3, 8], [2, 5], [1, 2], [3, 5], [5, 8], [2, 3], [3, 4], [4, 5], [7, 8], [9, 10]]) if (!bestF || Math.abs(fr - a / b) < Math.abs(fr - bestF[0] / bestF[1])) bestF = [a, b];
+  if (Math.abs(fr - bestF[0] / bestF[1]) < 0.006) note = ` (about ${bestF[0]}/${bestF[1]})`;
+  else note = ` (${bestF[0]}/${bestF[1]} of ${F(den)} is ${F(den * bestF[0] / bestF[1], 2)}, so a little ${fr > bestF[0] / bestF[1] ? "more" : "less"} than ${F(bestF[0] / bestF[1], 3)})`;
+  return { skill: "div.chunk",
+    steps: [`${F(den)} × ${q} = ${F(q * den)}`, `Remainder ${F(rem, 3)} ÷ ${F(den)} ≈ ${F(fr, 3)}${note}`, `${q} + ${F(fr, 3)} = ${F(ans, dp)}`],
+    why: "Division is repeated subtraction. Taking out whole multiples first leaves a remainder smaller than the divisor, which is just a fraction to estimate.",
+    remember: "Whole multiples first (EBITDA × n), then the remainder as a fraction of EBITDA.",
+    hints: ["Estimate how many whole times it fits.", `${F(den)} × ${q} = ${F(q * den)}.`, `What fraction of ${F(den)} is the remainder ${F(rem, 3)}?`] };
+}
+
+function mulSolve(m, E) {
+  const ans = m * E, RE = Math.round(E / 50) * 50;
+  if (RE !== E && RE > 0 && Math.abs(E - RE) <= 3) {
+    const d = E - RE;
+    return { skill: "mul.round",
+      steps: [`Round ${F(E)} to ${F(RE)}: ${F(m)} × ${F(RE)} = ${F(m * RE, 3)}`, `Correct: ${F(m)} × ${F(Math.abs(d))} = ${F(m * Math.abs(d), 3)}`, `${F(m * RE, 3)} ${d < 0 ? "−" : "+"} ${F(m * Math.abs(d), 3)} = ${F(ans, 3)}`],
+      why: "Multiplication distributes: m × (R ± k) = m × R ± m × k. The round product is easy and the correction is small.",
+      remember: "Round the awkward factor to a clean neighbor, then correct.",
+      hints: ["Is either number close to a round number?", `${F(E)} is close to ${F(RE)}.`, `${F(m)} × ${F(RE)} = ${F(m * RE, 3)}.`] };
+  }
+  const W = Math.floor(m + 1e-9), f = rnd(m - W, 4), s = [];
+  const big = E >= 100 && W >= 2 && E % 100 !== 0;
+  const H = Math.floor(E / 100) * 100;
+  if (W) s.push(big ? `${W} × ${F(E)} = ${W} × ${F(H)} + ${W} × ${F(E - H)} = ${F(W * H)} + ${F(W * (E - H))} = ${F(W * E)}` : `${W} × ${F(E)} = ${F(W * E)}`);
+  if (f === 0.5) s.push(`Half of ${F(E)} = ${F(E / 2, 3)}`);
+  else if (f === 0.25) s.push(`A quarter of ${F(E)} = ${F(E / 4, 3)}`);
+  else if (f === 0.75) s.push(`Three quarters of ${F(E)} = ${F(E)} − ${F(E / 4, 3)} = ${F(E * 0.75, 3)}`);
+  else if (f) s.push(`${F(f)} × ${F(E)} = ${F(f * E, 3)}`);
+  if (W && f) s.push(`Add: ${F(W * E)} + ${F(f * E, 3)} = ${F(ans, 3)}`);
+  return { skill: "mul.split", steps: s,
+    why: `Multiplication distributes: ${F(m)} × ${F(E)} = ${W} × ${F(E)} + ${F(f)} × ${F(E)}. Whole turns are clean products and the fraction of a turn is a simple fraction of the number.`,
+    remember: "Split the multiple into whole turns plus the fraction of a turn (½ = halve, ¼ = quarter).",
+    hints: ["Split the multiple into a whole number and a fraction.", `${F(m)} = ${W} + ${F(f)}.`, `${W} × ${F(E)} = ${F(W * E)}.`] };
+}
+
+/* ---------- compounding ---------- */
+const COMP_R = [5, 8, 10, 12, 15, 20, 25], COMP_N = [3, 5, 7];
+const compAnchor = (r, n) => rnd(Math.pow(1 + r / 100, n), 2);
+function factorSolve(r, n) {
+  const f = Math.pow(1 + r / 100, n), g = F(1 + r / 100, 2);
+  if (COMP_R.includes(r) && COMP_N.includes(n)) {
+    const fa = compAnchor(r, n);
+    return { skill: "comp.anchor", factor: fa,
+      steps: [`Anchor: (${g})^${n} ≈ ${fx2(fa)}x`],
+      why: "A memorized factor turns a power you can't do mentally into one multiplication.",
+      remember: `Anchors: 10% → ${fx2(compAnchor(10, 3))}x (3y), ${fx2(compAnchor(10, 5))}x (5y). 15% → ${fx2(compAnchor(15, 3))}x, ${fx2(compAnchor(15, 5))}x. 20% → ${fx2(compAnchor(20, 3))}x, ${fx2(compAnchor(20, 5))}x.`,
+      hints: ["Is this rate and period one of your compounding anchors?", `(${g})^${n} is in the anchor table.`, `It's about ${fx2(fa)}x.`] };
+  }
+  const lin = r * n, pairs = n * (n - 1) / 2, kick = pairs * r * r / 100, fa = 1 + (lin + kick) / 100;
+  if (lin <= 45) {
+    const gap = (f - fa) / f * 100;
+    return { skill: "comp.second", factor: fa,
+      steps: [`Simple growth: ${r}% × ${n} = ${lin}%`, `Compounding kicker (approximation): ${plural(pairs, "pair")} of years × (${r}%)² = ${F(kick, 2)}%`,
+        `Factor ≈ 1 + ${F(lin + kick, 2)}% = ${F(fa, 4)}x`].concat(gap > 0.5 ? [`This understates the exact factor by ${F(gap, 1)}%`] : []),
+      why: "(1 + r)^n = 1 + n·r + [n(n−1)/2]·r² + … The first two terms are simple growth. The r² term is growth on growth. Higher terms are negligible while n·r is small.",
+      remember: "Simple growth + kicker: n·r + [n(n−1)/2]·r². Reliable while n·r is under ~40%; beyond that it understates.",
+      hints: ["Start with simple growth, then add growth-on-growth.", `${r}% × ${n} years = ${lin}% simple.`, `Kicker: ${pairs} × (${r}%)².`] };
+  }
+  // square-and-multiply with 2-decimal rounding at each step
+  const pw = { 1: rnd(1 + r / 100, 4) }, s = [];
+  let e = 1;
+  while (e * 2 <= n) { pw[e * 2] = rnd(pw[e] * pw[e], 2); s.push(`${e * 2} yrs: ${F(pw[e], 2)}² ≈ ${F(pw[e * 2], 2)}`); e *= 2; }
+  let acc = pw[e], have = e;
+  for (const k of [4, 2, 1]) if (have + k <= n && pw[k]) { acc = rnd(acc * pw[k], 2); s.push(`${have + k} yrs: ${F(pw[have], 2)} × ${F(pw[k], 2)} ≈ ${F(acc, 2)}`); have += k; pw[have] = acc; }
+  return { skill: "comp.chain", factor: acc, steps: s,
+    why: "Squaring doubles the number of years each time, so 4 to 7 years takes two or three multiplications instead of up to seven.",
+    remember: "Square and multiply: (1 + r)² → ^4 → combine. Round to two decimals at each step.",
+    hints: ["Too far for simple growth. Square instead of multiplying year by year.", `(${g})² = ${F(rnd(pw[1] * pw[1], 4), 4)}.`, "Square again for 4 years, then multiply in the rest."] };
+}
+function compSolve(B, r, n) {
+  const f = Math.pow(1 + r / 100, n), ans = B * f, fs = factorSolve(r, n);
+  const steps = fs.steps.concat([`${M(B, 1)} × ${F(fs.factor, 4)} ≈ ${M(B * fs.factor, 1)}`, `Exact: ${M(B, 1)} × ${F(f, 4)} = ${M(ans, 1)}`]);
+  return Object.assign({}, fs, { steps, target: B * fs.factor, approx: true,
+    traps: [{ v: B * (1 + r * n / 100), label: "Used simple growth (rate × years) and ignored compounding" }, { v: ans - B, label: "Gave the increase instead of the ending value" }] });
+}
+
+/* ---------- IRR ---------- */
+const MO_ANCH = [1.25, 1.5, 2, 2.5, 3, 4, 5];
+const irrA = (m, n) => rnd((Math.pow(m, 1 / n) - 1) * 100, 1);
+function irrSolve(Mo, n) {
+  const ans = (Math.pow(Mo, 1 / n) - 1) * 100;
+  const traps = [{ v: (Mo - 1) / n * 100, label: "Divided total return by years: simple, not compounded" }, { v: (Mo - 1) * 100, label: "Gave total return, not annualized" }];
+  const rem2 = `2x: ${irrA(2, 3)}% (3y), ${irrA(2, 4)}% (4y), ${irrA(2, 5)}% (5y). 3x: ${irrA(3, 3)}% (3y), ${irrA(3, 4)}% (4y), ${irrA(3, 5)}% (5y).`;
+  const hit = MO_ANCH.find(a => Math.abs(a - Mo) < 1e-9);
+  if (hit) {
+    const s = [`Anchor: ${X(Mo, 2)} over ${n} years ≈ ${F(irrA(Mo, n), 1)}%`];
+    if (Mo === 2) s.push(`Cross-check (Rule of 72, approximation): 72 ÷ ${n} ≈ ${F(72 / n, 1)}%`);
+    if (Mo === 4) s.push(`Cross-check (two doublings, approximation): 144 ÷ ${n} ≈ ${F(144 / n, 1)}%`);
+    s.push(`Exact: ${F(Mo, 2)}^(1/${n}) − 1 = ${F(ans, 2)}%`);
+    return { skill: "ret.anchor", steps: s, target: irrA(Mo, n), approx: true, traps,
+      why: "IRR is the constant annual rate that turns 1 into the MOIC over the hold: (1 + IRR)^years = MOIC. A memorized grid replaces a root you can't take mentally.",
+      remember: rem2, hints: ["This MOIC and hold period are in the anchor grid.", "Recall the MOIC → IRR table.", `${X(Mo, 2)} over ${n} years.`] };
+  }
+  const lo = Math.max(...MO_ANCH.filter(a => a < Mo)), hi = Math.min(...MO_ANCH.filter(a => a > Mo));
+  const ia = irrA(lo, n), ib = irrA(hi, n), t = (Mo - lo) / (hi - lo), est = ia + t * (ib - ia);
+  return { skill: "ret.interp", target: est, approx: true, traps,
+    steps: [`Bracket it: ${X(lo, 2)} over ${n} yrs ≈ ${F(ia, 1)}%, ${X(hi, 2)} ≈ ${F(ib, 1)}%`,
+      `${X(Mo, 2)} is ${F(t * 100, 0)}% of the way from ${X(lo, 2)} to ${X(hi, 2)}: ${F(ia, 1)} + ${F(t, 2)} × ${F(ib - ia, 1)} ≈ ${F(est, 1)}%`,
+      `A straight line slightly understates (IRR rises more slowly as MOIC grows). Exact: ${F(ans, 2)}%`],
+    why: "Between two anchors the IRR curve is nearly straight, so a weighted average of the neighbors lands close. The curve bends downward, so the straight line sits slightly below the true IRR.",
+    remember: "Bracket between two anchors and interpolate. Nudge up a little: the true IRR sits just above the straight line.",
+    hints: ["Which two anchor MOICs does this sit between?", `${X(lo, 2)} and ${X(hi, 2)} over ${n} years.`, `${F(ia, 1)}% and ${F(ib, 1)}%. How far between?`] };
+}
+
+function changeSolve(A, B) {
+  const d = B - A, ans = d / A * 100;
+  const traps = [{ v: d / B * 100, label: "Divided by the ending value instead of the starting value" }, { v: B / A * 100, label: "Gave the ratio (end ÷ start) instead of the change" }];
+  let fr = null;
+  for (let b = 2; b <= 12 && !fr; b++) for (let a = 1; a <= 2 * b; a++) if (gcd(a, b) === 1 && Math.abs(d) * b === a * A) { fr = [a, b]; break; }
+  const base = { why: "Growth is measured against where you started, so the change goes over the starting value, never the ending value.",
+    remember: "% change = change ÷ START. Dividing by the end value understates growth and overstates declines.", traps };
+  if (fr) return Object.assign(base, { skill: "gr.change",
+    steps: [`Change = ${F(B)} − ${F(A)} = ${F(d)}`, `${F(Math.abs(d))} is ${fr[0]}/${fr[1]} of ${F(A)} → ${d < 0 ? "−" : "+"}${F(fr[0] / fr[1] * 100, 2)}%`],
+    hints: ["Find the change first.", `The change is ${F(d)}.`, `What fraction of ${F(A)} is ${F(Math.abs(d))}?`] });
+  return Object.assign(base, { skill: "gr.change",
+    steps: [`Change = ${F(B)} − ${F(A)} = ${F(d)}`, `1% of ${F(A)} = ${F(A / 100, 3)}`, `${F(d)} ÷ ${F(A / 100, 3)} ≈ ${F(ans, 2)}%`],
+    hints: ["Find the change first.", `The change is ${F(d)}. Divide by the START.`, `1% of ${F(A)} is ${F(A / 100, 3)}.`] });
+}
+
+function marginSolve(E, R) {
+  const ans = E / R * 100;
+  const traps = [{ v: R / E * 100, label: "Divided revenue by EBITDA (upside down)" }];
+  const base = { skill: "gr.margin", traps,
+    why: "A margin is a fraction of revenue. Rounding revenue gives a quick read; knowing which way you rounded tells you which side of it the true margin sits on.",
+    remember: "Margin = EBITDA ÷ revenue. Round revenue up → estimate comes out low; round down → high." };
+  if (R % 100 === 0 || only25(R)) {
+    const s = R % 100 === 0 ? [`1% of ${F(R)} = ${F(R / 100)}`, `${F(E)} ÷ ${F(R / 100)} = ${F(ans, 2)}%`] : fracSolve(E, R).steps;
+    return Object.assign(base, { steps: s, hints: ["Margin = EBITDA ÷ revenue.", "Revenue scales cleanly to 100.", s[0]] });
+  }
+  let R2 = null;
+  for (const st of [100, 50, 25, 10]) { const c = Math.round(R / st) * st; if (c > 0 && Math.abs(c - R) / R <= 0.04) { R2 = c; break; } }
+  if (!R2) R2 = Math.round(R / 10) * 10;
+  const m2 = E / R2 * 100, t = R / 10;
+  if (Math.abs(m2 - ans) > 0.8) R2 = R;
+  const s = [];
+  if (R2 !== R) s.push(`Quick read: ${F(E)} ÷ ${F(R2)} ≈ ${F(m2, 1)}%. Revenue was rounded ${R2 > R ? "up" : "down"}, so the true margin is a touch ${R2 > R ? "higher" : "lower"}`);
+  s.push(`Exact: 10% of ${F(R)} = ${F(t, 2)}`, `${F(E)} ÷ ${F(t, 2)} = ${F(E / t, 3)} tens of percent → ${F(ans, 2)}%`);
+  return Object.assign(base, { steps: s, target: R2 !== R ? m2 : null, targetNote: R2 !== R ? `Rounded revenue to ${F(R2)}.` : null,
+    hints: ["Margin = EBITDA ÷ revenue.", `Round revenue to ${F(R2)} for a first read.`, `10% of revenue is ${F(t, 2)}.`] });
+}
+
+/* =========================================================================
+   BUILDERS (shared by generators and interview cases)
+   ========================================================================= */
+function bPct(p, base, o) { const sol = pctSolve(p, base); return mk(Object.assign({ prompt: `${F(p)}% of ${F(base)}`, unit: "", dp: 2 }, o), sol, p * base / 100); }
+function bMul(m, E, o) { const sol = mulSolve(m, E); return mk(Object.assign({ unit: "M", pre: "$", dp: 1, traps: [{ v: E / m, label: "Divided instead of multiplied" }] }, o), sol, m * E); }
+function bDiv(num, den, o) { const sol = divSolve(num, den, o.dp === undefined ? 2 : o.dp); return mk(o, sol, num / den); }
+
+/* =========================================================================
+   GENERATORS — gen(d) with d = 1 (Beginner), 2 (Intermediate), 3 (Advanced)
+   ========================================================================= */
+const notMult5 = lo => { let p; do { p = rand(lo, 84); } while (p % 5 === 0); return p; };
+const G = {};
+
+// % of a number
+G.pctBlocks = d => {
+  let p, base;
+  if (d === 1) { p = rand(1, 8) * 10 + pick([1, 2, 3, 4]); base = rand(12, 99) * 10; }
+  else if (d === 2) { p = notMult5(3); base = rand(101, 999); }
+  else { p = notMult5(3) + (chance(0.5) ? 0.5 : 0); base = rand(1013, 9987); }
+  return bPct(p, base, { gen: "pctBlocks", diff: d, cat: "pct" });
+};
+G.pctHalf = d => {
+  const p = d === 1 ? pick([5, 15, 35, 45]) : d === 2 ? pick([2.5, 7.5, 15, 17.5, 22.5, 27.5, 35, 45, 55, 65]) : pick([17.5, 22.5, 27.5, 32.5, 42.5, 57.5, 67.5, 72.5]);
+  const base = d === 1 ? rand(6, 99) * 20 : d === 2 ? rand(101, 999) : rand(1013, 9987);
+  return bPct(p, base, { gen: "pctHalf", diff: d, cat: "pct" });
+};
+G.pctFraction = d => {
+  const p = d === 1 ? pick([12.5, 25, 37.5, 62.5, 75, 87.5]) : d === 2 ? pick([12.5, 37.5, 62.5, 87.5, 6.25, 18.75]) : pick([6.25, 18.75, 31.25, 37.5, 62.5]);
+  const base = d === 1 ? rand(5, 60) * 8 : d === 2 ? rand(101, 999) : rand(1013, 9987);
+  return bPct(p, base, { gen: "pctFraction", diff: d, cat: "pct" });
+};
+G.pctNear = d => {
+  const opts = [[[1, 8], [12, 13]], [[3, 8], [37, 38]], [[5, 8], [62, 63]], [[1, 3], [33, 34]], [[2, 3], [66, 67]], [[1, 6], [16, 17]], [[5, 6], [83, 84]]];
+  const [[, dd], ps] = pick(opts);
+  const p = pick(ps), base = dd * (d === 1 ? rand(5, 40) : d === 2 ? rand(13, 124) : rand(126, 1240));
+  return bPct(p, base, { gen: "pctNear", diff: d, cat: "pct" });
+};
+G.pctFlip = d => {
+  const base = d === 1 ? pick([25, 50, 20]) : d === 2 ? pick([25, 50, 20, 40, 75, 125, 250, 80]) : pick([75, 125, 250, 40, 80]);
+  let p;
+  do {
+    p = rand(11, 98);
+    if (d === 1 && base === 25) p = rand(3, 24) * 4;
+    if (d === 1 && base === 50) p = rand(6, 49) * 2;
+  } while (p % 10 === 0 || FRACP[p] || p >= 100);
+  return bPct(p, base, { gen: "pctFlip", diff: d, cat: "pct" });
+};
+G.pctComplement = d => {
+  const p = d === 1 ? pick([95, 96, 98, 99]) : d === 2 ? pick([85, 86, 88, 89, 91, 92, 93, 94, 96, 97, 98, 99]) : pick([86, 89, 91, 93, 94, 96, 97, 99, 92.5, 97.5]);
+  const base = d === 1 ? rand(2, 20) * 100 : d === 2 ? rand(101, 999) : rand(1013, 9987);
+  return bPct(p, base, { gen: "pctComplement", diff: d, cat: "pct" });
+};
+G.pctRound = d => {
+  let R, p;
+  if (d === 1) { R = pick([200, 300, 400, 500, 1000]); p = pick([10, 12, 15, 20, 30, 40, 60]); }
+  else if (d === 2) { R = pick([500, 1000, 2000]); p = rand(11, 79); }
+  else { R = pick([2000, 3000, 4000, 5000]); p = rand(11, 79); }
+  const kmax = Math.max(2, Math.floor(0.015 * R)), k = (d === 1 ? rand(1, 3) : rand(2, kmax)) * (chance(0.5) ? 1 : -1);
+  return bPct(p, R + k, { gen: "pctRound", diff: d, cat: "pct" });
+};
+
+// Fractions
+const coprimeN = (dd, lo, hi) => { let n; do { n = rand(lo, hi); } while (gcd(n, dd) !== 1); return n; };
+G.fracAnchor = d => {
+  const dd = d === 1 ? pick([3, 6, 8]) : d === 2 ? pick([7, 9, 12, 16]) : pick([7, 11, 12, 16]);
+  const n = coprimeN(dd, 1, dd - 1);
+  return mk({ gen: "fracAnchor", diff: d, cat: "frac", prompt: `${n} / ${dd}`, sub: "As a percentage?", unit: "%", dp: 2 }, fracSolve(n, dd), n / dd * 100);
+};
+G.fracScale = d => {
+  const dd = d === 1 ? pick([20, 25, 50, 200]) : d === 2 ? pick([40, 125, 250, 400, 80]) : pick([160, 320, 625, 800, 1250]);
+  const n = coprimeN(dd, 1, dd - 1);
+  return mk({ gen: "fracScale", diff: d, cat: "frac", prompt: `${F(n)} / ${F(dd)}`, sub: "As a percentage?", unit: "%", dp: 3 }, fracSolve(n, dd), n / dd * 100);
+};
+G.fracSimplify = d => {
+  const [a, b] = pick([[1, 3], [2, 3], [1, 6], [5, 6], [3, 8], [5, 8], [7, 8], [1, 8], [5, 12], [7, 12], [2, 7], [3, 7], [4, 9], [3, 16], [5, 16], [3, 4], [2, 5], [3, 5]]);
+  const k = d === 1 ? rand(2, 5) : d === 2 ? rand(6, 12) : rand(13, 25);
+  return mk({ gen: "fracSimplify", diff: d, cat: "frac", prompt: `${a * k} / ${b * k}`, sub: "As a percentage?", unit: "%", dp: 2 }, fracSolve(a * k, b * k), a / b * 100);
+};
+G.fracEstimate = d => {
+  let n, dd, tries = 0;
+  do {
+    tries++;
+    if (d === 3) { n = rand(101, 899); dd = rand(n + 40, 999); }
+    else {
+      const [a, b] = pick([[1, 3], [2, 3], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [1, 6], [3, 8], [5, 8], [1, 8]]);
+      const k = d === 1 ? rand(4, 12) : rand(5, Math.floor(99 / b));
+      n = a * k; dd = b * k + (d === 1 ? pick([-2, -1, 1, 2]) : pick([-4, -3, -2, -1, 1, 2, 3, 4]));
+    }
+  } while ((gcd(n, dd) !== 1 || only25(dd) || UNIT[dd] || n >= dd || dd < 10) && tries < 200);
+  return mk({ gen: "fracEstimate", diff: d, cat: "frac", prompt: `${n} / ${dd}`, sub: "As a percentage?", unit: "%", dp: 2 }, fracSolve(n, dd), n / dd * 100);
+};
+
+// Multiples & division
+G.divMultiple = d => {
+  let E, EV;
+  if (d === 1) { E = rand(4, 40) * 10; EV = E * rand(5, 14); }
+  else if (d === 2) { E = rand(21, 240) * 2; EV = E * rand(11, 29) / 2; }
+  else { E = rand(37, 480); EV = Math.round(E * rand(450, 1600) / 100 / 5) * 5; }
+  return bDiv(EV, E, { gen: "divMultiple", diff: d, cat: "div", prompt: `EV ${M(EV, 0)} · EBITDA ${M(E, 0)}`, sub: "Implied EV / EBITDA?", unit: "x", dp: 2,
+    traps: [{ v: E / EV, label: "Divided EBITDA by EV (upside down)" }] });
+};
+G.multEV = d => {
+  let E, m;
+  if (d === 1) { E = rand(4, 60) * 10; m = rand(5, 14); }
+  else if (d === 2) { E = chance(0.3) ? pick([98, 148, 198, 248, 102, 152, 202, 252, 99, 149, 199, 251]) : rand(21, 240) * 2; m = rand(11, 29) / 2; }
+  else { E = rand(37, 480); m = chance(0.5) ? rand(5, 13) + pick([0.25, 0.75]) : rand(55, 145) / 10; }
+  return bMul(m, E, { gen: "multEV", diff: d, cat: "div", prompt: `EBITDA ${M(E, 0)} at ${X(m, 2)}`, sub: "Enterprise value?" });
+};
+G.perShare = d => {
+  let sh, eq;
+  if (d === 1) { sh = rand(10, 80); eq = sh * rand(8, 90); }
+  else if (d === 2) { sh = rand(20, 150); eq = Math.round(sh * rand(1001, 9999) / 100); }
+  else { sh = rand(105, 480); eq = rand(1200, 48000); }
+  return bDiv(eq, sh, { gen: "perShare", diff: d, cat: "div", prompt: `Equity value ${M(eq, 0)} · ${sh}M shares`, sub: "Value per share?", unit: "", pre: "$", dp: 2 });
+};
+
+// Growth & margins
+G.change = d => {
+  let A, B;
+  if (d === 1) { A = rand(3, 25) * 20; B = A * (1 + pick([5, 10, 15, 20, 25, 30, 40, 50, -10, -20, -25]) / 100); }
+  else if (d === 2) { A = rand(40, 950); let g; do { g = rand(-20, 40); } while (g === 0); B = Math.round(A * (1 + g / 100)) + rand(-2, 2); if (B === A) B++; }
+  else { A = rand(1000, 9999); B = Math.round(A * (1 + rand(-300, 450) / 1000)); if (B === A) B++; }
+  return mk({ gen: "change", diff: d, cat: "growth", prompt: `Revenue ${M(A, 0)} → ${M(B, 0)}`, sub: "Growth, %?", unit: "%", dp: 2 }, changeSolve(A, B), (B - A) / A * 100);
+};
+G.margin = d => {
+  let R, E;
+  if (d === 1) { R = pick([rand(2, 30) * 100, pick([250, 400, 500, 125, 200])]); E = R * rand(8, 40) / 100; if (!Number.isInteger(E)) E = Math.round(E); }
+  else if (d === 2) { R = rand(120, 990); E = Math.max(1, Math.round(R * rand(80, 350) / 1000)); }
+  else { R = rand(1050, 9900); E = Math.round(R * rand(60, 400) / 1000); }
+  return mk({ gen: "margin", diff: d, cat: "growth", prompt: `EBITDA ${M(E, 0)} · revenue ${M(R, 0)}`, sub: "EBITDA margin?", unit: "%", dp: 2 }, marginSolve(E, R), E / R * 100);
+};
+G.ebitda = d => {
+  let R, m;
+  if (d === 1) { R = rand(2, 30) * 100; m = rand(8, 40); }
+  else if (d === 2) { R = rand(120, 990); m = rand(8, 40) + (chance(0.4) ? 0.5 : 0); }
+  else { R = rand(1050, 9900); m = rand(80, 400) / 10; }
+  return bPct(m, R, { gen: "ebitda", diff: d, cat: "growth", prompt: `Revenue ${M(R, 0)} at a ${F(m, 1)}% EBITDA margin`, sub: "EBITDA?", unit: "M", pre: "$", dp: 2,
+    traps: [{ v: R / m, label: "Divided by the margin instead of multiplying" }] });
+};
+G.bps = d => {
+  if (d === 1) {
+    const m0 = rand(80, 350) / 10; let dl; do { dl = rand(-15, 25) * 10; } while (dl === 0);
+    const m1 = rnd(m0 + dl / 100, 2);
+    return mk({ gen: "bps", diff: d, cat: "growth", prompt: `EBITDA margin ${F(m0, 1)}% → ${F(m1, 2)}%`, sub: "Change in basis points?", unit: "bps", dp: 0 },
+      { skill: "gr.bps", steps: [`Change in points: ${F(m1, 2)} − ${F(m0, 1)} = ${F(dl / 100, 2)} pts`, `1 pt = 100 bps → ${dl > 0 ? "+" : ""}${F(dl, 0)} bps`],
+        why: "Basis points measure the gap in percentage points, not the percent change in the margin. 100 bps = 1 percentage point.",
+        remember: "1% = 100 bps. A margin move from 18.0% to 19.5% is +150 bps, not +8%.",
+        traps: [{ v: (m1 - m0) / m0 * 100, label: "Gave the percent change in the margin, not the change in points" }],
+        hints: ["Subtract the two margins.", "Points × 100 = bps.", `${F(m1, 2)} − ${F(m0, 1)} = ?`] }, dl);
+  }
+  if (d === 2) {
+    const R = rand(12, 240) * 10, x = rand(2, 30) * 10, ans = R * x / 10000;
+    return mk({ gen: "bps", diff: d, cat: "growth", prompt: `Revenue ${M(R, 0)} · margin +${x} bps`, sub: "Added EBITDA (revenue flat)?", unit: "M", pre: "$", dp: 2 },
+      { skill: "gr.bps", steps: [`${x} bps = ${F(x / 100, 2)}% of revenue`, `1% of ${M(R, 0)} = ${M(R / 100, 2)}`, `${F(x / 100, 2)} × ${F(R / 100, 2)} = ${M(ans, 2)}`],
+        why: "With revenue flat, each basis point of margin is 1/10,000 of revenue in extra EBITDA.",
+        remember: "100 bps of margin = 1% of revenue in EBITDA. On $1bn of revenue, 10 bps ≈ $1M.",
+        traps: [{ v: R * x / 100, label: "Treated bps as percent (off by 100x)" }],
+        hints: ["Convert bps to percent first.", `${x} bps = ${F(x / 100, 2)}%.`, `1% of revenue is ${M(R / 100, 2)}.`] }, ans);
+  }
+  return G.ebitdaBridge(3);
+};
+G.ebitdaBridge = d => {
+  const lvl = Math.max(2, d);
+  let R0, g, R1, m0, x, m1, vol, mar, ans;
+  do {
+    R0 = lvl === 2 ? rand(10, 90) * 10 : rand(120, 950); g = lvl === 2 ? pick([5, 10, 15, 20]) : rand(3, 18);
+    R1 = lvl === 2 ? R0 * (1 + g / 100) : Math.round(R0 * (1 + g / 100));
+    m0 = rand(10, 30); x = pick([50, 100, 150, 200, 250, 300]) * pick([1, 1, 1, -1]); m1 = m0 + x / 100;
+    vol = (R1 - R0) * m0 / 100; mar = R1 * x / 10000; ans = R1 * m1 / 100 - R0 * m0 / 100;
+  } while (Math.abs(ans) < 0.15 * R0 * m0 / 100);
+  return mk({ gen: "ebitdaBridge", diff: d, cat: "growth", prompt: `Revenue ${M(R0, 0)} → ${M(R1, 1)} · margin ${m0}% → ${F(m1, 1)}%`, sub: "Change in EBITDA?", unit: "M", pre: "$", dp: 2, floor: 0.1 * R0 * m0 / 100 },
+    { skill: "gr.bridge", steps: [`Volume effect: (${F(R1, 1)} − ${F(R0)}) × ${m0}% = ${F(R1 - R0, 1)} × ${m0}% = ${F(vol, 3)}`, `Margin effect: ${F(R1, 1)} × ${x > 0 ? "+" : "−"}${pts(Math.abs(x) / 100)} = ${x > 0 ? "" : "−"}${F(Math.abs(mar), 3)}`, `Total: ${F(vol, 3)} ${mar >= 0 ? "+" : "−"} ${F(Math.abs(mar), 3)} = ${M(ans, 2)}`],
+      why: "New EBITDA − old EBITDA = (Δrevenue × old margin) + (new revenue × Δmargin). The split is exact and mirrors how bankers explain EBITDA growth.",
+      remember: "ΔEBITDA = volume effect (Δrevenue × old margin) + margin effect (new revenue × Δmargin).",
+      traps: [{ v: R1 * m1 / 100, label: "Gave new EBITDA, not the change" }, { v: vol, label: "Counted only the volume effect" }],
+      hints: ["Split it into growth in revenue and change in margin.", `Volume: ${F(R1 - R0, 1)} of new revenue at the old ${m0}% margin.`, `Margin: ${F(Math.abs(x))} bps on ${M(R1, 1)} of revenue.`] }, ans);
+};
+
+// Compounding
+G.compFactor = d => {
+  let r, n, B;
+  if (d === 1) { r = pick([5, 10]); n = pick([2, 3]); B = rand(5, 50) * 10; }
+  else if (d === 2) { if (chance(0.6)) { r = pick([5, 8, 10, 12, 15]); n = pick([3, 5]); } else { r = rand(4, 9); n = 4; } B = rand(40, 400); }
+  else { r = rand(6, 20); n = rand(4, 7); B = rand(37, 480); }
+  return mk({ gen: "compFactor", diff: d, cat: "comp", prompt: `${M(B, 0)} growing ${r}% a year for ${n} years`, sub: `Value in year ${n}?`, unit: "M", pre: "$", dp: 1 }, compSolve(B, r, n), B * Math.pow(1 + r / 100, n));
+};
+G.rule72 = d => {
+  let kind = "double", r;
+  if (d === 1) r = pick([6, 8, 9, 12]);
+  else if (d === 2) r = rand(4, 18);
+  else { kind = pick(["triple", "quadruple"]); r = rand(6, 15); }
+  const k = kind === "double" ? 2 : kind === "triple" ? 3 : 4, rule = kind === "double" ? 72 : kind === "triple" ? 115 : 144;
+  const ans = Math.log(k) / Math.log(1 + r / 100), est = rule / r;
+  return mk({ gen: "rule72", diff: d, cat: "comp", prompt: `Time to ${kind} at ${r}% a year`, sub: "Years?", unit: "yrs", dp: 1 },
+    { skill: "comp.rule72", target: est, approx: true,
+      steps: [`Rule of ${rule} (approximation): ${rule} ÷ ${r} ≈ ${F(est, 1)} years`, `Exact: ln ${k} ÷ ln(${F(1 + r / 100, 2)}) = ${F(ans, 2)} years`],
+      why: `You need years × ln(1 + r) = ln ${k}. ln 2 ≈ 0.69, but ln(1 + r) is a bit less than r, which is why 72 (not 69) works best for rates around 8%.`,
+      remember: "Doubling ≈ 72 ÷ rate. Tripling ≈ 115 ÷ rate. Quadrupling = two doublings ≈ 144 ÷ rate.",
+      traps: [{ v: 100 * (k - 1) / r, label: "Used simple growth (no compounding)" }],
+      hints: [`Use the Rule of ${rule}.`, `Divide ${rule} by the rate.`, `${rule} ÷ ${r}.`] }, ans);
+};
+G.cagr = d => {
+  let S, E, n;
+  do {
+    if (d === 1) { const ra = pick([1.5, 2, 3]); n = pick([3, 5]); S = rand(5, 50) * 20; E = S * ra; }
+    else if (d === 2) { const ra = pick([1.3, 1.4, 1.6, 1.75, 1.8, 2.25, 2.4]); n = rand(3, 7); S = rand(5, 50) * 20; E = Math.round(S * ra); }
+    else { S = rand(120, 950); E = Math.round(S * rand(130, 450) / 100); n = rand(3, 7); }
+  } while (E / S < 1.25 || E / S > 5);
+  const Mo = E / S, sol = irrSolve(Mo, n);
+  const steps = [`Ratio: ${F(E)} ÷ ${F(S)} = ${X(Mo, 3)}`].concat(sol.steps);
+  return mk({ gen: "cagr", diff: d, cat: "comp", prompt: `Revenue ${M(S, 0)} → ${M(E, 0)} over ${n} years`, sub: "CAGR?", unit: "%", dp: 2 },
+    Object.assign({}, sol, { steps, remember: "CAGR = the IRR of the growth multiple. Turn the start-to-end ratio into a MOIC and use the IRR anchors.",
+      hints: ["Turn it into a multiple first.", `End ÷ start = ${X(Mo, 2)}. Treat it like a MOIC.`, sol.hints[1]] }), (Math.pow(Mo, 1 / n) - 1) * 100);
+};
+
+// MOIC ↔ IRR
+G.moicIrr = d => {
+  const Mo = d === 1 ? pick([1.5, 2, 2.5, 3]) : d === 2 ? pick([1.75, 2.25, 2.75, 3.5, 4, 1.5, 2, 3]) : rnd(rand(130, 480) / 100, 2);
+  const n = d === 1 ? rand(3, 5) : rand(3, 7);
+  return mk({ gen: "moicIrr", diff: d, cat: "ret", prompt: `${X(Mo, 2)} over ${n} years`, sub: "IRR?", unit: "%", dp: 2 }, irrSolve(Mo, n), (Math.pow(Mo, 1 / n) - 1) * 100);
+};
+G.irrMoic = d => {
+  let irr, n;
+  if (d === 1) { irr = pick([10, 15, 20, 25]); n = pick([3, 5]); }
+  else if (d === 2) { irr = pick([12, 15, 18, 20, 22, 25, 30]); n = rand(3, 6); }
+  else { irr = rand(11, 35); n = rand(4, 7); }
+  const f = Math.pow(1 + irr / 100, n), fs = factorSolve(irr, n);
+  const steps = fs.steps.concat(irr >= 10 ? [`Cross-check (Rule of 72, approximation): doubles about every ${F(72 / irr, 1)} years`] : [], [`Exact: (${F(1 + irr / 100, 2)})^${n} = ${X(f, 3)}`]);
+  return mk({ gen: "irrMoic", diff: d, cat: "ret", prompt: `${irr}% IRR for ${n} years`, sub: "MOIC?", unit: "x", dp: 2 },
+    Object.assign({}, fs, { skill: fs.skill === "comp.anchor" ? "ret.moic" : fs.skill, steps, target: fs.factor, approx: true,
+      traps: [{ v: 1 + irr * n / 100, label: "Used simple growth (IRR × years) and ignored compounding" }] }), f);
+};
+G.equityRet = d => {
+  let a, b, n;
+  do {
+    if (d === 1) { a = rand(2, 10) * 100; b = a * pick([1.5, 2, 3]); n = pick([3, 5]); }
+    else if (d === 2) { a = rand(4, 40) * 25; b = a * pick([1.75, 2.25, 2.5, 2.75, 3.5]); n = rand(3, 7); }
+    else { a = rand(150, 900); b = Math.round(a * rand(150, 450) / 100); n = rand(3, 7); }
+  } while (b / a < 1.25 || b / a > 5);
+  const Mo = b / a, sol = irrSolve(Mo, n);
+  return mk({ gen: "equityRet", diff: d, cat: "ret", prompt: `Equity in ${M(a, 0)} → out ${M(b, 1)}`, sub: `${n}-year hold · IRR?`, unit: "%", dp: 2 },
+    Object.assign({}, sol, { steps: [`MOIC: ${F(b, 1)} ÷ ${F(a)} = ${X(Mo, 3)}`].concat(sol.steps),
+      hints: ["Get the MOIC first.", `MOIC = ${X(Mo, 2)}.`, sol.hints[1]] }), (Math.pow(Mo, 1 / n) - 1) * 100);
+};
+
+// EV ↔ equity bridge
+const SIMPLE_BRIDGE = "Simplified bridge: ignores options, convertibles and other claims.";
+G.toEquity = d => {
+  let EV, debt, cash = 0, pref = 0, nci = 0, S, px;
+  if (d === 1) { px = rand(10, 80); S = rand(10, 60); debt = rand(2, 30) * 50; }
+  else if (d === 2) { px = rand(1001, 9999) / 100; S = rand(20, 150); debt = rand(4, 60) * 25; cash = rand(1, 20) * 10; }
+  else { px = rand(1001, 9999) / 100; S = rand(40, 300); debt = rand(200, 3000); cash = rand(20, 600); pref = rand(0, 1) * rand(50, 400); nci = rand(20, 300); }
+  const eq = rnd(px * S, 2);
+  EV = Math.round(eq + debt - cash + pref + nci);
+  const eqx = EV - debt + cash - pref - nci, ans = eqx / S;
+  const parts = [`EV ${M(EV, 0)}`, d === 1 ? `net debt ${M(debt, 0)}` : `debt ${M(debt, 0)}`];
+  if (cash) parts.push(`cash ${M(cash, 0)}`); if (pref) parts.push(`preferred ${M(pref, 0)}`); if (nci) parts.push(`minority interest ${M(nci, 0)}`);
+  parts.push(`${S}M shares`);
+  const st = d === 1 ? [`Equity value = EV − net debt = ${F(EV)} − ${F(debt)} = ${F(eqx)}`]
+    : [`Equity value = EV − debt + cash${pref ? " − preferred" : ""}${nci ? " − minority interest" : ""}`, `${F(EV)} − ${F(debt)} + ${F(cash)}${pref ? ` − ${F(pref)}` : ""}${nci ? ` − ${F(nci)}` : ""} = ${F(eqx)}`];
+  const dv = divSolve(eqx, S, 2);
+  return mk({ gen: "toEquity", diff: d, cat: "bridge", prompt: parts.join(" · "), sub: "Value per share?", unit: "", pre: "$", dp: 2, note: SIMPLE_BRIDGE },
+    { skill: "br.equity", steps: st.concat([`Per share: ${F(eqx)} ÷ ${S}`]).concat(dv.steps),
+      why: "Enterprise value belongs to every capital provider. Equity holders get what's left after lenders (and preferred and minority holders) are paid, plus the company's cash.",
+      remember: "Equity = EV − debt + cash (− preferred − minority interest). Price = equity ÷ diluted shares.",
+      traps: [{ v: (EV + debt - cash + pref + nci) / S, label: "Added the claims instead of subtracting them" }, { v: (EV - debt - cash - pref - nci) / S, label: "Subtracted cash; cash adds to equity value" },
+        { v: (EV - debt - pref - nci) / S, label: "Ignored cash" }, { v: EV / S, label: "Skipped the bridge (divided EV by shares)" }, { v: (EV - debt + cash) / S, label: "Forgot preferred / minority interest" }],
+      hints: ["Walk from EV to equity value first.", "Equity = EV − debt + cash (and subtract other claims).", `Equity value = ${F(eqx)}. Now per share.`] }, ans);
+};
+G.toEV = d => {
+  let px, S, debt, cash = 0, E = null;
+  if (d === 1) { px = rand(10, 90); S = rand(10, 80); debt = rand(2, 40) * 50; }
+  else { px = rand(1001, 9999) / 100; S = rand(20, 200); debt = rand(100, 3000); cash = rand(20, 600); }
+  const cap = px * S, EV = cap + debt - cash;
+  if (d === 3) E = Math.round(EV / (rand(60, 150) / 10));
+  const ms = mulSolve(px, S);
+  const st = [`Market cap = ${F(px, 2)} × ${S}`].concat(ms.steps, [d === 1 ? `EV = market cap + net debt = ${F(cap, 2)} + ${F(debt)} = ${F(EV, 2)}` : `EV = market cap + debt − cash = ${F(cap, 2)} + ${F(debt)} − ${F(cash)} = ${F(EV, 2)}`]);
+  const parts = [`$${F(px, 2)} share price`, `${S}M shares`, d === 1 ? `net debt ${M(debt, 0)}` : `debt ${M(debt, 0)}`];
+  if (cash) parts.push(`cash ${M(cash, 0)}`);
+  const base = { skill: "br.ev", why: "Enterprise value is the value of the whole business: what equity holders own plus what lenders are owed, less the cash an acquirer would get back.",
+    remember: "EV = market cap + debt − cash (+ preferred + minority interest)." };
+  if (d === 3) {
+    parts.push(`EBITDA ${M(E, 0)}`);
+    const dv = divSolve(EV, E, 2);
+    return mk({ gen: "toEV", diff: d, cat: "bridge", prompt: parts.join(" · "), sub: "EV / EBITDA?", unit: "x", dp: 2, note: SIMPLE_BRIDGE },
+      Object.assign(base, { steps: st.concat([`EV / EBITDA = ${F(EV, 1)} ÷ ${F(E)}`], dv.steps), traps: [{ v: cap / E, label: "Used market cap instead of EV" }, { v: (cap - debt + cash) / E, label: "Subtracted net debt instead of adding it" }],
+        hints: ["Build EV first, then divide by EBITDA.", "EV = market cap + debt − cash.", `EV ≈ ${F(EV, 0)}.`] }), EV / E);
+  }
+  return mk({ gen: "toEV", diff: d, cat: "bridge", prompt: parts.join(" · "), sub: "Enterprise value?", unit: "M", pre: "$", dp: 1, note: SIMPLE_BRIDGE },
+    Object.assign(base, { steps: st, traps: [{ v: cap - debt + cash, label: "Subtracted net debt instead of adding it" }, { v: cap + debt + cash, label: "Added cash; cash is subtracted" }, { v: cap, label: "Gave market cap, not EV" }],
+      hints: ["Start with market cap.", "EV = market cap + debt − cash.", `Market cap = ${F(cap, 2)}.`] }), EV);
+};
+
+// Paper LBO
+const SIMPLE_LBO = "Simplified: no transaction fees unless stated, no minimum cash, all free cash flow repays debt.";
+G.lboEntry = d => {
+  let E, m, L, fee = 0;
+  if (d === 1) { E = rand(5, 30) * 10; m = rand(7, 12); L = rand(3, Math.min(6, m - 2)); }
+  else if (d === 2) { E = rand(21, 150) * 2; m = rand(14, 26) / 2; L = rand(6, 13) / 2; if (L >= m - 1) L = m - 2; }
+  else { E = rand(45, 400); m = rand(70, 130) / 10; L = rand(30, 60) / 10; fee = pick([2, 2.5, 3]); }
+  const EV = m * E, debt = L * E, fees = EV * fee / 100, ans = EV + fees - debt;
+  let st;
+  if (!fee) { const ms = mulSolve(m - L, E); st = [`Equity turns = ${X(m, 1)} − ${X(L, 1)} = ${X(m - L, 1)}`].concat(ms.steps.map(x => x)); }
+  else st = [`EV = ${X(m, 1)} × ${F(E)} = ${F(EV, 1)}`, `Fees = ${F(fee, 1)}% × ${F(EV, 1)} = ${F(fees, 2)}`, `Debt = ${X(L, 1)} × ${F(E)} = ${F(debt, 1)}`, `Equity = EV + fees − debt = ${F(EV, 1)} + ${F(fees, 2)} − ${F(debt, 1)} = ${M(ans, 2)}`];
+  return mk({ gen: "lboEntry", diff: d, cat: "lbo", prompt: `Buy ${M(E, 0)} EBITDA at ${X(m, 1)} · debt ${X(L, 1)}${fee ? ` · fees ${F(fee, 1)}% of EV` : ""}`, sub: "Sponsor equity check?", unit: "M", pre: "$", dp: 1, note: SIMPLE_LBO },
+    { skill: "lbo.entry", steps: st,
+      why: "Sources equal uses. The purchase price (plus fees) is funded by debt and equity, so equity is whatever debt doesn't cover. In turns of EBITDA: entry multiple minus leverage.",
+      remember: "Equity check = (entry multiple − leverage turns) × EBITDA, plus any fees.",
+      traps: [{ v: EV, label: "Gave enterprise value, not the equity check" }, { v: debt, label: "Gave the debt amount" }].concat(fee ? [{ v: EV - debt, label: "Forgot that fees are funded with equity" }] : []),
+      hints: ["Equity funds whatever debt doesn't.", fee ? "Equity = EV + fees − debt." : `Equity turns = ${X(m, 1)} − ${X(L, 1)}.`, fee ? `EV = ${F(EV, 1)}.` : `${X(m - L, 1)} × ${F(E)}.`] }, ans);
+};
+G.lboExit = d => {
+  if (d < 3) {
+    const E1 = rand(10, 50) * 10, m = d === 1 ? rand(7, 12) : rand(14, 26) / 2, EV = E1 * m;
+    let ND, D0 = 0, P = 0;
+    if (d === 1) ND = rand(1, Math.min(20, Math.floor(EV / 100))) * 50;
+    else { D0 = Math.max(100, Math.round(EV * rand(35, 70) / 100 / 50) * 50); P = rand(1, Math.max(1, Math.floor(D0 / 100))) * 50; if (P >= D0) P = D0 - 50; ND = D0 - P; }
+    const ans = EV - ND, ms = mulSolve(m, E1);
+    const st = [`Exit EV: ${X(m, 1)} × ${F(E1)}`].concat(ms.steps, d === 2 ? [`Net debt at exit = ${F(D0)} − ${F(P)} repaid = ${F(ND)}`] : [], [`Exit equity = ${F(EV, 1)} − ${F(ND)} = ${M(ans, 1)}`]);
+    return mk({ gen: "lboExit", diff: d, cat: "lbo", prompt: d === 1 ? `Exit EBITDA ${M(E1, 0)} at ${X(m, 1)} · net debt ${M(ND, 0)}` : `Exit EBITDA ${M(E1, 0)} at ${X(m, 1)} · entry debt ${M(D0, 0)}, ${M(P, 0)} repaid`, sub: "Exit equity value?", unit: "M", pre: "$", dp: 1, note: SIMPLE_LBO },
+      { skill: "lbo.exit", steps: st,
+        why: "At exit the business is sold for EV. Lenders are repaid what is still owed, and the sponsor keeps the rest. Every dollar of debt paid down during the hold becomes a dollar of equity.",
+        remember: "Exit equity = exit EBITDA × exit multiple − remaining net debt. Debt paydown converts to equity dollar for dollar.",
+        traps: [{ v: EV, label: "Forgot to subtract net debt" }].concat(d === 2 ? [{ v: EV - D0, label: "Used entry debt instead of debt after paydown" }, { v: EV - P, label: "Subtracted the paydown instead of the remaining debt" }] : []),
+        hints: ["Exit EV first, then the debt still owed.", `Exit EV = ${X(m, 1)} × ${F(E1)}.`, d === 2 ? `Remaining debt = ${F(D0)} − ${F(P)}.` : `Subtract ${F(ND)}.`] }, ans);
+  }
+  const E0 = rand(5, 30) * 10, g = pick([5, 8, 10, 12, 15]), n = pick([3, 5]), m = rand(14, 24) / 2, D0 = E0 * rand(3, 5), P = Math.round(D0 * rand(20, 60) / 100 / 10) * 10;
+  const f = Math.pow(1 + g / 100, n), fa = compAnchor(g, n), E1 = E0 * f, ND = D0 - P, ans = E1 * m - ND, tgt = E0 * fa * m - ND;
+  return mk({ gen: "lboExit", diff: d, cat: "lbo", prompt: `EBITDA ${M(E0, 0)} grows ${g}%/yr for ${n} yrs · exit ${X(m, 1)} · debt ${M(D0, 0)}, ${M(P, 0)} repaid`, sub: "Exit equity value?", unit: "M", pre: "$", dp: 1, note: SIMPLE_LBO },
+    { skill: "lbo.exit", target: tgt, approx: true,
+      steps: [`Exit EBITDA: anchor (${F(1 + g / 100, 2)})^${n} ≈ ${fx2(fa)}x → ${F(E0)} × ${fx2(fa)} ≈ ${F(E0 * fa, 1)}`, `Exit EV ≈ ${X(m, 1)} × ${F(E0 * fa, 1)} ≈ ${F(E0 * fa * m, 1)}`, `Net debt = ${F(D0)} − ${F(P)} = ${F(ND)}`,
+        `Exit equity ≈ ${F(E0 * fa * m, 1)} − ${F(ND)} ≈ ${M(tgt, 1)}`, `Exact (unrounded factor ${F(f, 4)}): ${M(ans, 1)}`],
+      why: "Break the deal into three numbers you can each do in one step: grown EBITDA (an anchor), exit EV (one multiplication) and remaining debt (one subtraction).",
+      remember: "Exit equity = EBITDA × (1+g)^n × exit multiple − (entry debt − paydown). Use the compounding anchor for (1+g)^n.",
+      traps: [{ v: E1 * m, label: "Forgot to subtract net debt" }, { v: E0 * (1 + g * n / 100) * m - ND, label: "Used simple EBITDA growth (no compounding)" }, { v: E1 * m - D0, label: "Used entry debt instead of debt after paydown" }],
+      hints: ["Grow EBITDA first, using a compounding anchor.", `(${F(1 + g / 100, 2)})^${n} ≈ ${fx2(fa)}.`, "Then exit EV, then subtract remaining debt."] }, ans);
+};
+
+// Anchor recall
+G.rcFrac = d => {
+  const dd = d === 1 ? pick([3, 4, 5, 8]) : d === 2 ? pick([6, 8, 12, 16]) : pick([7, 9, 11, 12, 16]);
+  const n = coprimeN(dd, 1, dd - 1), sol = fracSolve(n, dd);
+  return mk({ gen: "rcFrac", diff: d, cat: "recall", prompt: `${n} / ${dd}`, sub: "Recall as a %", unit: "%", dp: 2 }, Object.assign({}, sol, { skill: "rc.frac" }), n / dd * 100);
+};
+G.rcIrr = d => {
+  const Mo = d === 1 ? pick([2, 3]) : d === 2 ? pick([1.5, 2, 2.5, 3]) : pick([1.5, 2, 2.5, 3, 4, 5]);
+  const n = d === 1 ? pick([3, 5]) : d === 2 ? rand(3, 5) : rand(3, 7);
+  const a = irrA(Mo, n);
+  return mk({ gen: "rcIrr", diff: d, cat: "recall", prompt: `${X(Mo, 1)} in ${n} years`, sub: "Recall the IRR", unit: "%", dp: 1 },
+    { skill: "rc.irr", steps: [`${X(Mo, 1)} over ${n} years ≈ ${F(a, 1)}%`],
+      why: "(1 + IRR)^years = MOIC. These pairs come up in every paper LBO, so they're worth knowing cold.",
+      remember: `2x: ${irrA(2, 3)}% / ${irrA(2, 5)}% (3y / 5y). 3x: ${irrA(3, 3)}% / ${irrA(3, 5)}%.`,
+      hints: ["Recall the anchor grid.", "2x in 5 ≈ 15%, 3x in 5 ≈ 25%.", `${X(Mo, 1)} over ${n}.`] }, a);
+};
+G.rcComp = d => {
+  const r = d === 1 ? pick([10, 15, 20]) : d === 2 ? pick([5, 8, 10, 12, 15, 20]) : pick(COMP_R);
+  const n = d === 1 ? pick([3, 5]) : pick(COMP_N);
+  const f = Math.pow(1 + r / 100, n);
+  return mk({ gen: "rcComp", diff: d, cat: "recall", prompt: `(${F(1 + r / 100, 2)})^${n}`, sub: "Recall the factor", unit: "x", dp: 2 },
+    { skill: "rc.comp", steps: [`${r}% for ${n} years ≈ ${fx2(compAnchor(r, n))}x`],
+      why: "Compounding factors turn exit-EBITDA and MOIC questions into one multiplication.",
+      remember: `10%: ${fx2(compAnchor(10, 3))} / ${fx2(compAnchor(10, 5))}x. 15%: ${fx2(compAnchor(15, 3))} / ${fx2(compAnchor(15, 5))}x. 20%: ${fx2(compAnchor(20, 3))} / ${fx2(compAnchor(20, 5))}x (3y / 5y).`,
+      hints: ["Recall the compounding table.", `${r}% for ${n} years.`, "Between 1x and 5x."] }, f);
+};
+
+const GENS = {
+  pct: ["pctBlocks", "pctHalf", "pctFraction", "pctNear", "pctFlip", "pctComplement", "pctRound"],
+  frac: ["fracAnchor", "fracScale", "fracSimplify", "fracEstimate"],
+  div: ["divMultiple", "multEV", "perShare"],
+  growth: ["change", "margin", "ebitda", "bps", "ebitdaBridge"],
+  comp: ["compFactor", "rule72", "cagr"],
+  ret: ["moicIrr", "irrMoic", "equityRet"],
+  bridge: ["toEquity", "toEV"],
+  lbo: ["lboEntry", "lboExit"],
+  recall: ["rcFrac", "rcIrr", "rcComp"]
+};
+
+/* ---------- skills (techniques) for the shortcut library ---------- */
+const SK = {
+  "pct.blocks":     { cat: "pct", name: "Build from 10% and 1%", gen: "pctBlocks", par: [8, 12, 20] },
+  "pct.half":       { cat: "pct", name: "Halving chain: 10% → 5% → 2.5%", gen: "pctHalf", par: [8, 12, 20] },
+  "pct.eighths":    { cat: "pct", name: "Percent as a fraction (eighths, quarters)", gen: "pctFraction", par: [6, 10, 18] },
+  "pct.anchorAdj":  { cat: "pct", name: "Fraction anchor, then adjust", gen: "pctNear", par: [8, 12, 20] },
+  "pct.flip":       { cat: "pct", name: "Flip it: x% of y = y% of x", gen: "pctFlip", par: [5, 8, 12] },
+  "pct.complement": { cat: "pct", name: "Work down from 100%", gen: "pctComplement", par: [8, 12, 20] },
+  "pct.round":      { cat: "pct", name: "Round the base, then correct", gen: "pctRound", par: [8, 12, 20] },
+  "frac.anchor":    { cat: "frac", name: "Know the common fractions", gen: "fracAnchor", par: [4, 6, 10] },
+  "frac.scale":     { cat: "frac", name: "Scale the denominator to 100", gen: "fracScale", par: [6, 9, 14] },
+  "frac.simplify":  { cat: "frac", name: "Simplify first", gen: "fracSimplify", par: [8, 12, 18] },
+  "frac.estimate":  { cat: "frac", name: "Nearby clean fraction, then scale", gen: "fracEstimate", par: [10, 15, 25] },
+  "frac.chunk":     { cat: "frac", name: "Count 10% slices of the denominator", gen: "fracEstimate", par: [10, 15, 25] },
+  "div.chunk":      { cat: "div", name: "Whole multiples, then the remainder", gen: "divMultiple", par: [8, 12, 20] },
+  "div.round":      { cat: "div", name: "Round the divisor, then rescale", gen: "divMultiple", par: [8, 12, 20] },
+  "mul.split":      { cat: "div", name: "Split the multiple into whole and fractional turns", gen: "multEV", par: [6, 10, 15] },
+  "mul.round":      { cat: "div", name: "Round the factor, then correct", gen: "multEV", par: [6, 10, 15] },
+  "gr.change":      { cat: "growth", name: "Percent change off the starting value", gen: "change", par: [8, 12, 20] },
+  "gr.margin":      { cat: "growth", name: "Margins: round revenue, know the direction", gen: "margin", par: [8, 12, 20] },
+  "gr.bps":         { cat: "growth", name: "Basis points and margin dollars", gen: "bps", par: [5, 12, 20] },
+  "gr.bridge":      { cat: "growth", name: "EBITDA bridge: volume + margin effect", gen: "ebitdaBridge", par: [20, 25, 35] },
+  "comp.anchor":    { cat: "comp", name: "Compounding anchors (3, 5, 7 years)", gen: "compFactor", par: [6, 10, 18] },
+  "comp.second":    { cat: "comp", name: "Simple growth + compounding kicker", gen: "compFactor", par: [10, 15, 22] },
+  "comp.chain":     { cat: "comp", name: "Square and multiply", gen: "compFactor", par: [15, 20, 30] },
+  "comp.rule72":    { cat: "comp", name: "Rule of 72 / 115 / 144", gen: "rule72", par: [4, 6, 10] },
+  "ret.anchor":     { cat: "ret", name: "MOIC → IRR anchors", gen: "moicIrr", par: [5, 10, 15] },
+  "ret.interp":     { cat: "ret", name: "Interpolate between IRR anchors", gen: "moicIrr", par: [10, 15, 20] },
+  "ret.moic":       { cat: "ret", name: "IRR → MOIC with compounding anchors", gen: "irrMoic", par: [8, 12, 18] },
+  "br.equity":      { cat: "bridge", name: "EV → equity value → per share", gen: "toEquity", par: [12, 18, 30] },
+  "br.ev":          { cat: "bridge", name: "Market cap + net debt → EV", gen: "toEV", par: [12, 18, 30] },
+  "lbo.entry":      { cat: "lbo", name: "Equity check = equity turns × EBITDA", gen: "lboEntry", par: [8, 12, 25] },
+  "lbo.exit":       { cat: "lbo", name: "Exit equity = exit EV − remaining debt", gen: "lboExit", par: [12, 20, 40] },
+  "rc.frac":        { cat: "recall", name: "Recall: fractions", gen: "rcFrac", par: [3, 4, 5] },
+  "rc.irr":         { cat: "recall", name: "Recall: MOIC → IRR grid", gen: "rcIrr", par: [3, 4, 5] },
+  "rc.comp":        { cat: "recall", name: "Recall: compounding factors", gen: "rcComp", par: [3, 4, 5] }
+};
+const parFor = q => (SK[q.skill] ? SK[q.skill].par[(q.diff || 1) - 1] : 15);
+
+function genQ(gen, d, skill) {
+  for (let i = 0; i < 60; i++) {
+    const q = G[gen](d);
+    if (!skill || q.skill === skill) return q;
+  }
+  // fallback: try other generators in the skill's category, then any difficulty
+  if (skill) for (const dd of [1, 2, 3]) for (const g of GENS[SK[skill].cat]) for (let i = 0; i < 25; i++) { const q = G[g](dd); if (q.skill === skill) return q; }
+  return G[gen](d);
+}
+function similar(q) { return genQ(q.gen || SK[q.skill].gen, q.diff || 1, q.skill); }
+
+/* =========================================================================
+   INTERVIEW CASES — multi-step, carrying rounded results forward
+   ========================================================================= */
+const CASES = {
+  comps: "Trading comps → share price", lbo: "Paper LBO → returns", operating: "Operating plan → EBITDA growth", implied: "Market-implied valuation"
+};
+function step(q, o) { return Object.assign(q, o); }
+function arith(o, steps, ans, extra) {
+  return mk(o, Object.assign({ skill: o.skill, steps, why: o.why, remember: o.remember, hints: o.hints || ["Write down what you already know from earlier steps.", steps[0], steps[1] || steps[0]] }, extra || {}), ans);
+}
+function caseComps(d) {
+  const R = d === 1 ? rand(4, 20) * 100 : rand(250, 1800), m = d === 1 ? rand(10, 30) : d === 2 ? rand(10, 30) + (chance(0.5) ? 0.5 : 0) : rand(100, 350) / 10;
+  const k = d === 1 ? rand(7, 12) : d === 2 ? rand(14, 26) / 2 : rand(70, 140) / 10;
+  const E = rnd(R * m / 100, 1), EVx = k * E;
+  const debt = d === 1 ? Math.max(50, Math.round(EVx * rand(10, 45) / 100 / 50) * 50) : Math.round(EVx * rand(10, 50) / 100);
+  const cash = d === 1 ? 0 : Math.round(debt * rand(5, 40) / 100);
+  const q1 = bPct(m, R, { gen: "ebitda", diff: d, cat: "growth", prompt: "EBITDA?", sub: `Revenue ${M(R, 0)} × ${F(m, 1)}% margin`, unit: "M", pre: "$", dp: 1 });
+  const q2 = bMul(k, E, { gen: "multEV", diff: d, cat: "div", prompt: "Enterprise value?", sub: `${X(k, 1)} × EBITDA ${M(E, 1)}` });
+  const EV = rnd(k * E, 1), ND = debt - cash, eq = rnd(EV - ND, 1), S = Math.max(5, Math.round(eq / rand(15, 90)));
+  const q3 = arith({ gen: "toEquity", diff: d, cat: "bridge", skill: "br.equity", prompt: "Equity value?", sub: `EV ${M(EV, 1)} · debt ${M(debt, 0)}${cash ? ` · cash ${M(cash, 0)}` : ""}`, unit: "M", pre: "$", dp: 1,
+    why: "Equity holders own what's left of EV after net debt.", remember: "Equity = EV − debt + cash." },
+  [cash ? `Net debt = ${F(debt)} − ${F(cash)} = ${F(ND)}` : `Net debt = ${F(debt)}`, `Equity = ${F(EV, 1)} − ${F(ND)} = ${F(eq, 1)}`], eq, { traps: [{ v: EV + ND, label: "Added net debt instead of subtracting it" }, { v: EV - debt - cash, label: "Subtracted cash" }] });
+  const q4 = bDiv(eq, S, { gen: "perShare", diff: d, cat: "div", prompt: "Implied share price?", sub: `Equity ${M(eq, 1)} ÷ ${S}M shares`, unit: "", pre: "$", dp: 2 });
+  return { type: "comps", title: CASES.comps, setup: [["Revenue", M(R, 0)], ["EBITDA margin", F(m, 1) + "%"], ["Peer EV / EBITDA", X(k, 1)], ["Debt", M(debt, 0)]].concat(cash ? [["Cash", M(cash, 0)]] : [], [["Diluted shares", S + "M"]]), steps: [q1, q2, q3, q4] };
+}
+function caseLbo(d) {
+  let E0, m0, L, g, n, m1, P, eq0, eq1, Mo;
+  for (let i = 0; i < 200; i++) {
+    E0 = d === 1 ? rand(5, 20) * 10 : rand(40, 250); m0 = d === 1 ? rand(8, 11) : rand(16, 24) / 2; L = d === 1 ? rand(4, 5) : rand(8, 11) / 2;
+    g = d === 1 ? pick([5, 10]) : pick([5, 8, 10, 12, 15]); n = pick([3, 5]); m1 = d === 3 ? m0 + pick([-1, -0.5, 0.5]) : m0;
+    const debt0 = L * E0; P = Math.round(debt0 * rand(20, 60) / 100 / 10) * 10;
+    eq0 = m0 * E0 - debt0; const E1 = rnd(E0 * Math.pow(1 + g / 100, n), 1); eq1 = rnd(m1 * E1 - (debt0 - P), 1); Mo = rnd(eq1 / eq0, 2);
+    if (Mo >= 1.3 && Mo <= 4.8) break;
+  }
+  const EV0 = m0 * E0, debt0 = L * E0, E1 = rnd(E0 * Math.pow(1 + g / 100, n), 1), EV1 = rnd(m1 * E1, 1), ND1 = debt0 - P;
+  const q1 = bMul(m0, E0, { gen: "multEV", diff: d, cat: "div", prompt: "Entry enterprise value?", sub: `${X(m0, 1)} × ${M(E0, 0)} EBITDA` });
+  const q2 = arith({ gen: "lboEntry", diff: d, cat: "lbo", skill: "lbo.entry", prompt: "Sponsor equity?", sub: `EV ${M(EV0, 1)} · debt ${X(L, 1)} EBITDA`, unit: "M", pre: "$", dp: 1,
+    why: "Equity funds whatever the debt doesn't.", remember: "Equity check = (entry multiple − leverage) × EBITDA." },
+  [`Debt = ${X(L, 1)} × ${F(E0)} = ${F(debt0, 1)}`, `Equity = ${F(EV0, 1)} − ${F(debt0, 1)} = ${F(eq0, 1)} (or ${X(m0 - L, 1)} × ${F(E0)})`], eq0, { traps: [{ v: EV0, label: "Gave EV, not equity" }, { v: debt0, label: "Gave the debt" }] });
+  const q3 = mk({ gen: "compFactor", diff: d, cat: "comp", prompt: "Exit-year EBITDA?", sub: `${M(E0, 0)} growing ${g}% a year for ${n} years`, unit: "M", pre: "$", dp: 1 }, compSolve(E0, g, n), E0 * Math.pow(1 + g / 100, n));
+  const q4 = arith({ gen: "lboExit", diff: d, cat: "lbo", skill: "lbo.exit", prompt: "Exit equity value?", sub: `Exit EBITDA ${M(E1, 1)} at ${X(m1, 1)} · ${M(P, 0)} of debt repaid`, unit: "M", pre: "$", dp: 1,
+    why: "Sale price minus whatever debt is still owed.", remember: "Exit equity = exit EV − (entry debt − paydown)." },
+  [`Exit EV = ${X(m1, 1)} × ${F(E1, 1)} = ${F(EV1, 1)}`].concat(mulSolve(m1, E1).steps, [`Remaining debt = ${F(debt0, 1)} − ${F(P)} = ${F(ND1, 1)}`, `Exit equity = ${F(EV1, 1)} − ${F(ND1, 1)} = ${F(eq1, 1)}`]), eq1,
+  { traps: [{ v: EV1, label: "Forgot to subtract debt" }, { v: EV1 - debt0, label: "Used entry debt instead of debt after paydown" }] });
+  const q5 = bDiv(eq1, eq0, { gen: "equityRet", diff: d, cat: "ret", prompt: "MOIC?", sub: `${M(eq1, 1)} out ÷ ${M(eq0, 1)} in`, unit: "x", dp: 2, traps: [{ v: eq0 / eq1, label: "Divided entry by exit (upside down)" }] });
+  q5.skill = "div.chunk";
+  const q6 = mk({ gen: "moicIrr", diff: d, cat: "ret", prompt: "IRR?", sub: `${X(Mo, 2)} over ${n} years`, unit: "%", dp: 2 }, irrSolve(Mo, n), (Math.pow(Mo, 1 / n) - 1) * 100);
+  return { type: "lbo", title: CASES.lbo, note: SIMPLE_LBO + " Debt paydown is given rather than built from a cash flow schedule.",
+    setup: [["LTM EBITDA", M(E0, 0)], ["Entry multiple", X(m0, 1)], ["Leverage", X(L, 1) + " EBITDA"], ["EBITDA growth", `${g}% / yr`], ["Hold", `${n} years`], ["Exit multiple", X(m1, 1)], ["Debt repaid over hold", M(P, 0)]],
+    steps: [q1, q2, q3, q4, q5, q6] };
+}
+function caseOperating(d) {
+  const R0 = d === 1 ? rand(4, 30) * 50 : rand(150, 2500), g = d === 1 ? pick([5, 10, 15, 20]) : d === 2 ? rand(3, 25) : rand(30, 250) / 10;
+  const m0 = d === 1 ? rand(10, 30) : rand(80, 300) / 10, m1 = rnd(m0 + pick([50, 100, 150, 200, -50, -100]) / 100, 1);
+  const R1 = rnd(R0 * (1 + g / 100), 1), E0 = rnd(R0 * m0 / 100, 1), E1 = rnd(R1 * m1 / 100, 1);
+  const pg = pctSolve(g, R0);
+  const q1 = mk({ gen: "change", diff: d, cat: "growth", prompt: "Next-year revenue?", sub: `${M(R0, 0)} growing ${F(g, 1)}%`, unit: "M", pre: "$", dp: 1 },
+    Object.assign({}, pg, { steps: pg.steps.concat([`${F(R0)} + ${F(R0 * g / 100, 3)} = ${F(R1, 1)}`]), traps: [{ v: R0 * g / 100, label: "Gave the increase, not the new revenue" }] }), R0 * (1 + g / 100));
+  const q2 = bPct(m0, R0, { gen: "ebitda", diff: d, cat: "growth", prompt: "Current EBITDA?", sub: `${M(R0, 0)} × ${F(m0, 1)}% margin`, unit: "M", pre: "$", dp: 1 });
+  const q3 = bPct(m1, R1, { gen: "ebitda", diff: d, cat: "growth", prompt: "Next-year EBITDA?", sub: `${M(R1, 1)} × ${F(m1, 1)}% margin`, unit: "M", pre: "$", dp: 1 });
+  const q4 = mk({ gen: "change", diff: d, cat: "growth", prompt: "EBITDA growth?", sub: `${M(E0, 1)} → ${M(E1, 1)}`, unit: "%", dp: 2 }, changeSolve(E0, E1), (E1 - E0) / E0 * 100);
+  return { type: "operating", title: CASES.operating, setup: [["Revenue", M(R0, 0)], ["Revenue growth", F(g, 1) + "%"], ["EBITDA margin now", F(m0, 1) + "%"], ["EBITDA margin next year", F(m1, 1) + "%"]], steps: [q1, q2, q3, q4] };
+}
+function caseImplied(d) {
+  const px = d === 1 ? rand(10, 80) : rand(1001, 9999) / 100, S = d === 1 ? rand(10, 60) : rand(20, 200);
+  let cap, EV, E, k, debt, cash, tries = 0;
+  do {
+    debt = d === 1 ? rand(2, 30) * 50 : rand(100, 2500); cash = d === 1 ? 0 : rand(20, 500);
+    cap = rnd(px * S, 1); EV = rnd(cap + debt - cash, 1);
+    E = Math.max(5, Math.round(EV / (rand(60, 160) / 10))); k = d === 1 ? rand(7, 14) : rand(14, 30) / 2;
+  } while ((k * E - (debt - cash) < 0.4 * cap || debt > 0.8 * cap) && ++tries < 300);
+  const q1 = bMul(px, S, { gen: "toEV", diff: d, cat: "bridge", prompt: "Market cap?", sub: `$${F(px, 2)} × ${S}M shares` }); q1.skill = "mul.split";
+  const q2 = arith({ gen: "toEV", diff: d, cat: "bridge", skill: "br.ev", prompt: "Enterprise value?", sub: `Market cap ${M(cap, 1)} · debt ${M(debt, 0)}${cash ? ` · cash ${M(cash, 0)}` : ""}`, unit: "M", pre: "$", dp: 1,
+    why: "EV = what equity holders own + what lenders are owed − cash.", remember: "EV = market cap + debt − cash." }, [`${F(cap, 1)} + ${F(debt)}${cash ? ` − ${F(cash)}` : ""} = ${F(EV, 1)}`], EV,
+  { traps: [{ v: cap - debt + cash, label: "Subtracted net debt" }] });
+  const q3 = bDiv(EV, E, { gen: "divMultiple", diff: d, cat: "div", prompt: "EV / EBITDA?", sub: `EV ${M(EV, 1)} ÷ EBITDA ${M(E, 0)}`, unit: "x", dp: 2 });
+  const tEV = k * E, tEq = tEV - (debt - cash), tPx = tEq / S;
+  const q4 = arith({ gen: "toEquity", diff: d, cat: "bridge", skill: "br.equity", prompt: `Share price at a peer ${X(k, 1)}?`, sub: `EBITDA ${M(E, 0)} · net debt ${M(debt - cash, 0)} · ${S}M shares`, unit: "", pre: "$", dp: 2,
+    why: "Apply the peer multiple to get EV, bridge to equity, divide by shares.", remember: "Implied price = (multiple × EBITDA − net debt) ÷ shares." },
+  [`EV = ${X(k, 1)} × ${F(E)} = ${F(tEV, 1)}`, `Equity = ${F(tEV, 1)} − ${F(debt - cash)} = ${F(tEq, 1)}`, `Per share = ${F(tEq, 1)} ÷ ${S} = $${F(tPx, 2)}`], tPx,
+  { traps: [{ v: tEV / S, label: "Skipped the bridge (divided EV by shares)" }] });
+  return { type: "implied", title: CASES.implied, setup: [["Share price", "$" + F(px, 2)], ["Diluted shares", S + "M"], ["Debt", M(debt, 0)]].concat(cash ? [["Cash", M(cash, 0)]] : [], [["EBITDA", M(E, 0)], ["Peer multiple", X(k, 1)]]), steps: [q1, q2, q3, q4] };
+}
+const CASEGEN = { comps: caseComps, lbo: caseLbo, operating: caseOperating, implied: caseImplied };
+
+/* ---------- error classification ---------- */
+function classify(q, given, ok, secs, timed, timeout) {
+  const par = parFor(q);
+  if (ok) return { type: timed && secs > par ? "slow" : "solid" };
+  if (timeout) return { type: "slow", label: "Ran out of time" };
+  if (given === null) return { type: "method", label: "Skipped: no approach" };
+  for (const t of q.traps || []) {
+    if (!isFinite(t.v) || t.v === 0) continue;
+    const close = q.tol === "rel" ? Math.abs(given - t.v) / Math.abs(t.v) <= 0.03 : Math.abs(given - t.v) <= (q.tol === "bps" ? 5 : 0.35);
+    const distinct = q.tol === "rel" ? Math.abs(t.v - q.answer) / Math.abs(q.answer) > 0.06 : Math.abs(t.v - q.answer) > (q.tol === "bps" ? 10 : 1);
+    if (close && distinct) return { type: "concept", label: t.label };
+  }
+  if (given !== 0 && q.answer !== 0) {
+    const ratio = Math.abs(given / q.answer);
+    for (const k of [10, 100, 1000, 0.1, 0.01, 0.001]) if (Math.abs(ratio / k - 1) <= 0.03) return { type: "magnitude", label: "Decimal place or units slip" };
+    if (given * q.answer < 0 && Math.abs(Math.abs(given) - Math.abs(q.answer)) / Math.abs(q.answer) < 0.05) return { type: "precision", label: "Sign flipped" };
+  }
+  const near = q.tol === "rel" ? Math.abs(given - q.answer) / Math.abs(q.answer) <= 0.12 : Math.abs(given - q.answer) <= (q.tol === "bps" ? 40 : 3);
+  if (near) return { type: "precision", label: "Close: arithmetic slip" };
+  return { type: "method", label: "Method broke down" };
+}
+const BUCKET = { concept: "concept", method: "concept", precision: "accuracy", magnitude: "accuracy", slow: "speed", solid: null };
+//ENGINE-END
+
+/* =========================================================================
+   APP — modes, sessions, review queue, progress, library
+   ========================================================================= */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+};
+const DEFAULTS = { mode: "practice", pLen: 20, sLen: 2, iCases: 3, iTimer: 60, talk: true, diff: "2", tol: "interview", cats: Object.keys(CATS), cases: Object.keys(CASES), smart: true };
+let settings = Object.assign({}, DEFAULTS, store.get("mmd2.settings", {}));
+settings.cats = settings.cats.filter(c => CATS[c]); settings.cases = settings.cases.filter(c => CASES[c]);
+const emptyB = () => ({ concept: 0, accuracy: 0, speed: 0 });
+function migrate() {
+  const st = { cat: {}, skill: {}, sessions: [], levels: {}, seen: {} };
+  const old = store.get("mmd.stats", null);
+  if (old) for (const [c, v] of Object.entries(old)) if (CATS[c] && v && v.n) st.cat[c] = { n: v.n, ok: v.ok, t: v.t, tn: v.n, b: emptyB() };
+  return st;
+}
+let ST = store.get("mmd2.stats", null) || migrate();
+let REV = store.get("mmd2.review", []);
+const saveSettings = () => store.set("mmd2.settings", settings);
+const saveStats = () => store.set("mmd2.stats", ST);
+const saveRev = () => store.set("mmd2.review", REV);
+const $ = id => document.getElementById(id);
+const clone = o => JSON.parse(JSON.stringify(o));
+
+const MODES = {
+  learn: { name: "Learn", desc: "Untimed. Hints and full solutions. Nothing is scored." },
+  practice: { name: "Practice", desc: "Untimed and scored. Solution after every answer." },
+  sprint: { name: "Sprint", desc: "Against the clock. Untimed mistake review after." },
+  interview: { name: "Interview", desc: "Multi-step deal cases with a timer on each step." }
+};
+const DIFFS = { "1": "Beginner", "2": "Intermediate", "3": "Advanced", auto: "Adaptive" };
+const DIFF_DESC = {
+  "1": "Clean numbers. The focus is recognizing which shortcut fits.",
+  "2": "Less convenient numbers that need rounding and estimation.",
+  "3": "Messy numbers, multi-step problems and paper LBO components.",
+  auto: "Each category starts at Beginner and moves up or down with your accuracy and speed."
+};
+const unitLabel = q => ({ "%": "%", x: "x", M: "M", yrs: "years", bps: "bps" }[q.unit] || "");
+
+/* ---------- stats ---------- */
+function bump(o, ok, secs, cls) {
+  o.n++; if (ok) o.ok++; o.t += Math.min(secs, 120); o.tn++;
+  const b = BUCKET[cls.type]; if (b) o.b[b]++;
+}
+function record(q, ok, secs, cls) {
+  const c = ST.cat[q.cat] || (ST.cat[q.cat] = { n: 0, ok: 0, t: 0, tn: 0, b: emptyB() });
+  bump(c, ok, secs, cls);
+  const s = ST.skill[q.skill] || (ST.skill[q.skill] = { n: 0, ok: 0, t: 0, tn: 0, b: emptyB(), labels: {}, hist: [] });
+  bump(s, ok, secs, cls);
+  if (!ok && cls.label) s.labels[cls.label] = (s.labels[cls.label] || 0) + 1;
+  s.hist.push(ok ? 1 : 0); if (s.hist.length > 20) s.hist.shift();
+  ST.seen[q.skill] = true;
+  adapt(q, ok, secs);
+  saveStats();
+}
+function adapt(q, ok, secs) {
+  if (settings.diff !== "auto") return;
+  const L = ST.levels[q.cat] || (ST.levels[q.cat] = { lv: 1, recent: [] });
+  if ((q.diff || 1) !== L.lv) return;
+  L.recent.push({ ok, fast: secs <= parFor(q) * 1.2 });
+  const r = L.recent;
+  if (r.length >= 6) { const l6 = r.slice(-6); if (l6.filter(x => x.ok).length >= 5 && l6.filter(x => x.fast).length >= 4 && L.lv < 3) { L.lv++; L.recent = []; return; } }
+  if (r.length >= 4) { const l4 = r.slice(-4); if (l4.filter(x => !x.ok).length >= 3 && L.lv > 1) { L.lv--; L.recent = []; } }
+}
+const diffFor = cat => settings.diff === "auto" ? ((ST.levels[cat] && ST.levels[cat].lv) || 1) : +settings.diff;
+function diffForCase() {
+  if (settings.diff !== "auto") return +settings.diff;
+  const lv = ["growth", "div", "bridge", "lbo", "ret"].map(c => (ST.levels[c] && ST.levels[c].lv) || 1);
+  return Math.max(1, Math.round(lv.reduce((a, b) => a + b, 0) / lv.length));
+}
+
+/* ---------- review queue (Leitner boxes) ---------- */
+const HOUR = 36e5, DAY = 864e5, BOXDUE = [0, DAY, 3 * DAY, 7 * DAY, 21 * DAY];
+const dueItems = () => REV.filter(r => r.due <= Date.now()).sort((a, b) => a.due - b.due);
+function addReview(q) {
+  if (REV.some(r => r.q.prompt === q.prompt)) return null;
+  const it = { id: Date.now() + "-" + Math.random().toString(36).slice(2, 7), q: clone(q), box: 0, due: Date.now() };
+  REV.push(it); if (REV.length > 80) REV.shift(); saveRev();
+  if (S) S.added.add(it.id);
+  return it;
+}
+function updateReview(it, ok) {
+  const r = REV.find(x => x.id === it.id); if (!r) return;
+  if (ok) { r.box++; if (r.box >= BOXDUE.length) REV = REV.filter(x => x.id !== r.id); else r.due = Date.now() + BOXDUE[r.box]; }
+  else { r.box = 0; r.due = Date.now() + 6 * HOUR; }
+  saveRev();
+}
+
+/* ---------- views ---------- */
+const VIEWS = ["setup", "drill", "summary", "debrief", "lib", "anchors", "progress"];
+const TAB_OF = { setup: "train", drill: "train", summary: "train", debrief: "train", lib: "lib", anchors: "anchors", progress: "progress" };
+function show(v) {
+  VIEWS.forEach(x => $("v-" + x).classList.toggle("hidden", x !== v));
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.v === TAB_OF[v]));
+  $("tabs").classList.toggle("hidden", v === "drill" || v === "debrief");
+  document.body.classList.toggle("focus", v === "drill");
+  if (v === "setup") renderSetup();
+  if (v === "lib") renderLib();
+  if (v === "anchors") renderAnchors();
+  if (v === "progress") renderProgress();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- setup ---------- */
+function seg(key, opts) {
+  return `<div class="seg">` + opts.map(([v, l]) => `<button class="${String(settings[key]) === String(v) ? "on" : ""}" data-act="set" data-k="${key}" data-v="${v}">${l}</button>`).join("") + `</div>`;
+}
+const toggleRow = (title, key, desc) => `<div class="toggle"><div><b>${title}</b><div class="fine">${desc}</div></div><button class="switch ${settings[key] ? "on" : ""}" data-act="toggle" data-k="${key}" aria-label="${title}"></button></div>`;
+const chip = (key, k, label) => `<button class="chip ${settings[key].includes(k) ? "on" : ""}" data-act="chip" data-k="${key}" data-v="${k}">${label}</button>`;
+function tolTable() {
+  const row = l => `<tr class="${settings.tol === l ? "on" : ""}"><td>${TOL[l].label}</td><td>±${TOL[l].pp} pt${TOL[l].pp === 1 ? "" : "s"}</td><td>±${rnd(TOL[l].rel * 100, 1)}%</td><td>±${TOL[l].bps} bps</td></tr>`;
+  return `<table class="tol"><tr><th></th><th>% answers</th><th>$, x, years</th><th>bps</th></tr>${TOL_ORDER.map(row).join("")}</table>
+  <div class="fine">Percentage answers are judged in percentage points. Dollar values, multiples and years are judged as a percent of the correct answer. When the fastest method is an estimate (IRR, CAGR, doubling time, compounding anchors), grading is never tighter than that shortcut can reach.</div>`;
+}
+function renderSetup() {
+  const due = dueItems().length;
+  let h = "";
+  if (due) h += `<div class="card review"><div><div class="stamp">Review due</div><div class="rv-n">${plural(due, "question")} to revisit</div><div class="fine">Missed or flagged questions. You get the same question first, then variations at growing intervals.</div></div><button class="btn sm" data-act="startReview">Start</button></div>`;
+  h += `<div class="lbl">Mode</div><div class="modes">` + Object.entries(MODES).map(([k, m]) => `<button class="mcard ${settings.mode === k ? "on" : ""}" data-act="set" data-k="mode" data-v="${k}"><b>${m.name}</b><span>${m.desc}</span></button>`).join("") + `</div>`;
+  if (settings.mode === "practice") h += `<div class="lbl">Length</div>` + seg("pLen", [[10, "10 questions"], [20, "20 questions"], [0, "Unlimited"]]);
+  if (settings.mode === "sprint") h += `<div class="lbl">Length</div>` + seg("sLen", [[1, "1 min"], [2, "2 min"], [5, "5 min"], [10, "10 min"]]);
+  if (settings.mode === "interview") {
+    h += `<div class="lbl">Cases</div>` + seg("iCases", [[1, "1"], [3, "3"], [5, "5"]]);
+    h += `<div class="lbl">Time per step</div>` + seg("iTimer", [[0, "Off"], [30, "30s"], [60, "60s"], [90, "90s"]]);
+    h += toggleRow("Talk it through first", "talk", "Hides the keypad until you've said your approach out loud, like you would in the room. The clock keeps running.");
+  }
+  h += `<div class="lbl">Difficulty</div>` + seg("diff", Object.entries(DIFFS)) + `<div class="fine">${DIFF_DESC[settings.diff]}</div>`;
+  h += `<div class="lbl">Tolerance</div>` + seg("tol", [["exact", "Exact"], ["tight", "Tight"], ["interview", "Interview"]]) + tolTable();
+  if (settings.mode === "interview") h += `<div class="lbl">Case types</div><div class="chips">` + Object.entries(CASES).map(([k, v]) => chip("cases", k, v)).join("") + `</div>`;
+  else {
+    h += `<div class="lbl">Question types <span><button class="link" data-act="allCats">All</button> · <button class="link" data-act="noCats">Clear</button></span></div><div class="chips">` + Object.entries(CATS).map(([k, v]) => chip("cats", k, v)).join("") + `</div>`;
+    if (settings.mode !== "learn") h += toggleRow("Smart mix", "smart", "Serves more of your weakest and slowest categories, and slips due review questions into the session.");
+  }
+  const can = settings.mode === "interview" ? settings.cases.length : settings.cats.length;
+  h += `<button class="btn cta" data-act="start" ${can ? "" : "disabled"}>${can ? "Start " + MODES[settings.mode].name.toLowerCase() : "Pick at least one type"}</button>`;
+  $("v-setup").innerHTML = h;
+}
+
+/* ---------- session ---------- */
+let S = null;
+function stopTimers() { if (S) { clearInterval(S.timer); clearInterval(S.stepTimer); clearTimeout(S.adv); } }
+function start(mode, opts = {}) {
+  stopTimers();
+  S = {
+    kind: mode, log: [], q: null, entry: "", answered: false, t0: 0, hints: 0, focus: opts.focus || null,
+    presets: opts.presets ? opts.presets.slice() : null, total: opts.total !== undefined ? opts.total : (mode === "practice" ? (settings.pLen || Infinity) : Infinity),
+    end: mode === "sprint" ? Date.now() + settings.sLen * 60000 : null, startTs: Date.now(), last: null, added: new Set(),
+    counted: !["learn", "retry"].includes(mode), timed: mode !== "learn", label: opts.label || (MODES[mode] ? MODES[mode].name : "Review"), override: null
+  };
+  if (S.presets) S.total = S.presets.length;
+  if (mode === "interview") {
+    const types = settings.cases.length ? settings.cases : Object.keys(CASES);
+    S.iv = { cases: [], ci: 0, si: 0 };
+    for (let i = 0; i < settings.iCases; i++) { const t = pick(types); S.iv.cases.push(CASEGEN[t](diffForCase())); }
+  }
+  if (mode === "sprint") S.timer = setInterval(tick, 200);
+  show("drill");
+  nextQ();
+}
+function pickCat() {
+  const cats = settings.cats.length ? settings.cats : Object.keys(CATS);
+  if (!settings.smart || cats.length === 1 || S.kind === "learn") return pick(cats);
+  const w = cats.map(c => {
+    const s = ST.cat[c]; if (!s || s.n < 5) return 1.5;
+    const avg = s.tn ? s.t / s.tn : 0;
+    return 1 + 2 * (1 - s.ok / s.n) + Math.min(avg / 25, 1);
+  });
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < cats.length; i++) { r -= w[i]; if (r <= 0) return cats[i]; }
+  return cats[cats.length - 1];
+}
+function nextQ() {
+  clearInterval(S.stepTimer); clearTimeout(S.adv);
+  S.curReview = null;
+  if (S.kind === "interview") {
+    const c = S.iv.cases[S.iv.ci];
+    if (S.iv.si >= c.steps.length) return showDebrief();
+    S.q = c.steps[S.iv.si];
+  } else if (S.override) { S.q = S.override; S.override = null; }
+  else if (S.presets) {
+    if (!S.presets.length) return finish();
+    const it = S.presets.shift();
+    if (it.box !== undefined) { S.curReview = it; S.q = it.box === 0 ? clone(it.q) : similar(it.q); }
+    else S.q = clone(it);
+  } else {
+    if (S.log.length >= S.total) return finish();
+    if (S.end && Date.now() >= S.end) return finish();
+    let q = null;
+    if (S.focus && S.focus.skill) { const sk = SK[S.focus.skill]; q = genQ(sk.gen, diffFor(sk.cat), S.focus.skill); }
+    else if (S.focus && S.focus.gens) q = G[pick(S.focus.gens)](diffFor("recall"));
+    else {
+      if (settings.smart && S.counted && S.log.length % 4 === 3) {
+        const due = dueItems().filter(r => !S.added.has(r.id));
+        if (due.length) { const it = due[0]; S.curReview = it; S.added.add(it.id); q = it.box === 0 ? clone(it.q) : similar(it.q); }
+      }
+      if (!q) { let tries = 0; do { const cat = pickCat(); q = G[pick(GENS[cat])](diffFor(cat)); } while (S.last && q.prompt === S.last && ++tries < 6); }
+    }
+    S.q = q;
+  }
+  S.last = S.q.prompt; S.entry = ""; S.answered = false; S.hints = 0; S.t0 = Date.now(); S.flagged = false;
+  renderQ();
+}
+function renderQ() {
+  const q = S.q;
+  $("dCat").textContent = CATS[q.cat] + (S.curReview ? " · review" : "");
+  $("dDiff").textContent = DIFFS[String(q.diff)] || "";
+  $("dPrompt").textContent = q.prompt; $("dPrompt").classList.toggle("long", q.prompt.length > 34);
+  $("dSub").textContent = q.sub;
+  $("dPre").textContent = q.pre; $("dUnit").textContent = unitLabel(q);
+  $("dAns").className = "answer active"; $("dVerdict").textContent = ""; $("dVerdict").className = "verdict";
+  $("dHints").innerHTML = ""; $("dAfter").classList.add("hidden"); $("dAfter").innerHTML = "";
+  $("dPadWrap").classList.remove("hidden");
+  $("dTools").innerHTML = S.kind === "learn" ? `<button class="btn sec sm" data-act="hint" id="hintBtn">Hint 1 of ${q.hints.length}</button><button class="btn ghost sm" data-act="reveal">Show solution</button>` : "";
+  $("dTools").classList.toggle("hidden", S.kind !== "learn");
+  renderCase();
+  const talk = S.kind === "interview" && settings.talk;
+  $("dTalk").classList.toggle("hidden", !talk); $("pad").classList.toggle("hidden", talk);
+  renderEntry(); renderBar();
+  if (S.kind === "interview" && settings.iTimer) { S.stepEnd = Date.now() + settings.iTimer * 1000; S.stepTimer = setInterval(stepTick, 200); }
+}
+function renderEntry() {
+  const v = $("dVal");
+  if (S.entry === "") { v.textContent = "0"; v.classList.add("ph"); }
+  else { v.textContent = S.entry.replace("-", "−"); v.classList.remove("ph"); }
+}
+function renderBar() {
+  const n = S.log.length, okN = S.log.filter(r => r.ok).length;
+  const pw = $("dProgWrap"); pw.classList.remove("warn", "hidden");
+  if (S.kind === "learn") { $("dBar").textContent = `Learn · question ${n + (S.answered ? 0 : 1)}`; pw.classList.add("hidden"); return; }
+  if (S.kind === "sprint") return tick();
+  if (S.kind === "interview") {
+    const c = S.iv.cases[S.iv.ci];
+    $("dBar").textContent = `Case ${S.iv.ci + 1} of ${S.iv.cases.length} · step ${S.iv.si + 1} of ${c.steps.length}`;
+    if (!settings.iTimer) $("dProg").style.width = (S.iv.si / c.steps.length * 100) + "%";
+    return;
+  }
+  const lbl = S.kind === "review" ? "Review" : S.kind === "retry" ? "Retry" : "Question";
+  $("dBar").textContent = isFinite(S.total) ? `${lbl} ${Math.min(n + (S.answered ? 0 : 1), S.total)} of ${S.total}` : `${lbl} ${n + (S.answered ? 0 : 1)} · ${okN} correct`;
+  $("dProg").style.width = isFinite(S.total) ? (n / S.total * 100) + "%" : "0%";
+  if (!isFinite(S.total)) pw.classList.add("hidden");
+}
+function tick() {
+  if (!S || S.kind !== "sprint") return;
+  const left = Math.max(0, S.end - Date.now()), s = Math.ceil(left / 1000);
+  const okN = S.log.filter(r => r.ok).length;
+  $("dBar").innerHTML = `<b class="${s <= 10 ? "low" : ""}">${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</b>${okN} correct · ${S.log.length} answered`;
+  $("dProg").style.width = (100 - left / (settings.sLen * 600)) + "%";
+  if (left <= 0) finish();
+}
+function stepTick() {
+  if (!S || S.answered) return;
+  const left = Math.max(0, S.stepEnd - Date.now()), tot = settings.iTimer * 1000;
+  $("dProg").style.width = (left / tot * 100) + "%";
+  $("dProgWrap").classList.toggle("warn", left < 10000);
+  const c = S.iv.cases[S.iv.ci];
+  $("dBar").innerHTML = `<b class="${left < 10000 ? "low" : ""}">${Math.ceil(left / 1000)}s</b>Case ${S.iv.ci + 1} of ${S.iv.cases.length} · step ${S.iv.si + 1} of ${c.steps.length}`;
+  if (left <= 0) submit("timeout");
+}
+function renderCase() {
+  const el = $("dCase");
+  if (S.kind !== "interview") { el.classList.add("hidden"); return; }
+  const c = S.iv.cases[S.iv.ci], done = S.log.filter(r => r.ci === S.iv.ci);
+  let h = `<div class="stamp">Case ${S.iv.ci + 1} of ${S.iv.cases.length}</div><h3>${c.title}</h3><div class="kv">` + c.setup.map(([k, v]) => `<span>${k}</span><span>${v}</span>`).join("") + `</div>`;
+  if (done.length) h += `<div class="known"><div class="kv one">` + done.map(r => `<span>${r.q.prompt.replace("?", "")} ${r.ok ? "✓" : "✗"}</span><span>${ansText(r.q)}</span>`).join("") + `</div><div class="fine">Later steps use these correct figures.</div></div>`;
+  el.innerHTML = h; el.classList.remove("hidden");
+}
+
+function press(k) {
+  if (!S || $("v-drill").classList.contains("hidden")) return;
+  if (S.answered) { if (k === "go") primaryNext(); return; }
+  if (S.kind === "interview" && settings.talk && !$("dTalk").classList.contains("hidden")) { if (k === "go") talkDone(); return; }
+  if (k === "go") return submit("answer");
+  if (k === "skip") return submit("skip");
+  if (k === "del") S.entry = S.entry.slice(0, -1);
+  else if (k === "neg") S.entry = S.entry.startsWith("-") ? S.entry.slice(1) : "-" + S.entry;
+  else if (k === ".") { if (!S.entry.includes(".")) S.entry += (S.entry === "" || S.entry === "-") ? "0." : "."; }
+  else if (/^\d$/.test(k)) { if (S.entry.replace(/[-.]/g, "").length < 10) S.entry = (S.entry === "0" ? "" : S.entry === "-0" ? "-" : S.entry) + k; }
+  renderEntry();
+}
+function talkDone() { $("dTalk").classList.add("hidden"); $("pad").classList.remove("hidden"); }
+
+function submit(how) {
+  if (!S || S.answered) return;
+  const raw = S.entry;
+  if (how === "answer" && (raw === "" || raw === "-" || raw === "." || raw === "-." || raw === "0.")) return;
+  const given = how === "answer" ? parseFloat(raw) : null;
+  const secs = (Date.now() - S.t0) / 1000, q = S.q;
+  const g = grade(q, given, settings.tol);
+  const cls = classify(q, given, g.ok, secs, S.timed, how === "timeout");
+  S.answered = true; clearInterval(S.stepTimer);
+  const rec = { q, given, ok: g.ok, secs, cls, level: g.level, how };
+  if (S.kind === "interview") { rec.ci = S.iv.ci; rec.si = S.iv.si; }
+  S.log.push(rec);
+  if (S.counted) { record(q, g.ok, secs, cls); if (!g.ok && !S.curReview) addReview(q); }
+  else { ST.seen[q.skill] = true; saveStats(); }
+  if (S.curReview) updateReview(S.curReview, g.ok);
+  showResult(rec);
+}
+function verdictText(rec) {
+  const q = rec.q;
+  let v = rec.ok ? "✓ Correct" : rec.how === "timeout" ? "Time's up" : rec.given === null ? "Skipped" : "✗ Outside tolerance";
+  if (!rec.ok || S.kind === "sprint") v += ` · answer ${ansText(q)}`;
+  if (rec.ok && q.target !== null && q.approx) v += " · estimate accepted";
+  if (S.timed && S.kind !== "practice" && S.kind !== "review" && S.kind !== "retry") v += ` · ${fmt(rec.secs, 1)}s`;
+  return v;
+}
+function showResult(rec) {
+  const q = rec.q;
+  $("dAns").className = "answer " + (rec.ok ? "ok" : "no");
+  if (rec.given === null) { $("dVal").textContent = "—"; $("dVal").classList.add("ph"); }
+  $("dVerdict").className = "verdict " + (rec.ok ? "ok" : "no");
+  $("dVerdict").textContent = verdictText(rec);
+  renderBar();
+  if (S.kind === "sprint") { S.adv = setTimeout(() => { if (S && S.answered && S.kind === "sprint") nextQ(); }, rec.ok ? 450 : 1500); return; }
+  $("dPadWrap").classList.add("hidden");
+  const open = S.kind === "learn" || !rec.ok;
+  let btns;
+  if (S.kind === "interview") {
+    const last = S.iv.si >= S.iv.cases[S.iv.ci].steps.length - 1;
+    btns = `<button class="btn flex2" data-act="next">${last ? "Case debrief →" : "Next step →"}</button>`;
+  } else if (S.kind === "learn") btns = `<button class="btn sec" data-act="similar">Try a similar one</button><button class="btn flex2" data-act="next">Next →</button>`;
+  else if (S.kind === "retry") btns = `<button class="btn flex2" data-act="next">Next →</button>`;
+  else btns = `<button class="btn sec" data-act="flag" id="flagBtn">☆ Flag</button><button class="btn sec" data-act="similar">Similar</button><button class="btn flex2" data-act="next">Next →</button>`;
+  $("dAfter").innerHTML = `<details class="sol" ${open ? "open" : ""}><summary>Fastest solution</summary>${solHTML(q, rec)}</details><div class="actions">${btns}</div>`;
+  $("dAfter").classList.remove("hidden");
+}
+function solHTML(q, rec) {
+  const L = effLevel(q, settings.tol);
+  let tgt = q.target !== null ? `≈ ${ansText(q, q.target)}` : "Exact";
+  let tnote = q.target !== null ? (q.approx ? "What the shortcut gives you." : (q.targetNote || "Good enough to say out loud.")) : "No estimate needed. The shortcut is exact.";
+  let h = `<div class="solb"><div class="soltop"><div><span>Correct answer</span><b>${ansText(q)}</b></div><div><span>Mental target</span><b>${tgt}</b><small>${tnote}</small></div></div>`;
+  h += `<div class="lbl">Fastest method</div><ol class="steps">${q.steps.map(s => `<li>${s}</li>`).join("")}</ol>`;
+  h += `<div class="lbl">Why it works</div><p>${q.why}</p>`;
+  h += `<div class="remember"><div class="lbl">Remember this</div>${q.remember}</div>`;
+  if (rec && !rec.ok && rec.given !== null) h += `<div class="diag">You answered <b>${ansText(q, rec.given)}</b>. ${rec.cls.label ? rec.cls.label + "." : ""}</div>`;
+  if (q.note) h += `<div class="gnote">${q.note}</div>`;
+  if (L !== settings.tol) h += `<div class="gnote">Graded at ${TOL[L].label} tolerance: the fastest method here is an estimate, so it isn't held to ${TOL[settings.tol].label}.</div>`;
+  return h + `</div>`;
+}
+function primaryNext() {
+  if (S.kind === "interview") { S.iv.si++; return nextQ(); }
+  nextQ();
+}
+
+/* ---------- interview debrief ---------- */
+function showDebrief() {
+  stopTimers();
+  const ci = S.iv.ci, c = S.iv.cases[ci], recs = S.log.filter(r => r.ci === ci);
+  const okN = recs.filter(r => r.ok).length;
+  let h = `<div class="stamp">Case ${ci + 1} of ${S.iv.cases.length} · debrief</div><h2 style="margin-top:4px">${c.title}</h2>`;
+  h += `<div class="big">${okN} / ${recs.length}</div>`;
+  h += `<table class="t"><tr><th>Step</th><th>You</th><th>Answer</th><th>Time</th></tr>` + recs.map(r => {
+    const par = parFor(r.q);
+    return `<tr><td>${r.ok ? "✓" : "✗"} ${r.q.prompt.replace("?", "")}</td><td>${r.given === null ? (r.how === "timeout" ? "time" : "—") : ansText(r.q, r.given)}</td><td>${ansText(r.q)}</td><td style="white-space:nowrap">${fmt(r.secs, 0)}s<span class="fine"> / ${par}s</span></td></tr>`;
+  }).join("") + `</table><div class="fine">Time is shown against par for that step at this difficulty.</div>`;
+  const fix = recs.filter(r => !r.ok || r.cls.type === "slow");
+  if (fix.length) {
+    h += `<h2>Faster routes</h2><div class="fine" style="margin-top:-4px">Steps you missed or took longer than par on, with the shortcut that gets there fastest.</div>`;
+    h += fix.map((r, i) => `<details class="sol" ${i === 0 ? "open" : ""}><summary>${r.q.prompt} ${r.ok ? '<span class="pill amber">slow</span>' : '<span class="pill bad">missed</span>'}</summary>${solHTML(r.q, r)}</details>`).join("");
+    const skills = [...new Set(fix.map(r => r.q.skill))];
+    h += `<div class="lbl">Shortcuts to drill</div><div class="chips">` + skills.map(s => `<button class="chip" data-act="learnSkill" data-v="${s}">${SK[s].name}</button>`).join("") + `</div>`;
+  } else h += `<p class="rec">Every step was right and inside par. Next time, try a shorter step timer or Advanced difficulty.</p>`;
+  if (c.note) h += `<div class="gnote">${c.note}</div>`;
+  const more = ci + 1 < S.iv.cases.length;
+  h += `<div class="actions"><button class="btn sec" data-act="endSession">Finish</button>${more ? `<button class="btn flex2" data-act="nextCase">Next case →</button>` : ""}</div>`;
+  $("v-debrief").innerHTML = h;
+  show("debrief");
+}
+
+/* ---------- summary ---------- */
+function bucketsOf(log) { const b = emptyB(); log.forEach(r => { const k = BUCKET[r.cls.type]; if (k) b[k]++; }); return b; }
+function diagnose(b) {
+  const tot = b.concept + b.accuracy + b.speed;
+  if (!tot) return "Nothing to fix in this set: no misses and nothing slower than par.";
+  const top = Object.entries(b).sort((x, y) => y[1] - x[1])[0][0];
+  return {
+    concept: "Most issues are conceptual: the method wasn't there. Open those shortcuts in Learn mode before drilling for speed.",
+    accuracy: "Most issues are calculation accuracy: right method, but the arithmetic slipped. Slow down a notch and say each intermediate number.",
+    speed: "Most issues are speed: answers were right but slower than par. Sprint mode on these categories is the fix."
+  }[top];
+}
+function diagBar(b) {
+  const tot = b.concept + b.accuracy + b.speed || 1;
+  return `<div class="diagbar">${["concept", "accuracy", "speed"].map(k => `<i class="c-${k}" style="width:${b[k] / tot * 100}%"></i>`).join("")}</div>
+  <div class="legend"><span><i class="c-concept"></i>Concept ${b.concept}</span><span><i class="c-accuracy"></i>Accuracy ${b.accuracy}</span><span><i class="c-speed"></i>Speed ${b.speed}</span></div>`;
+}
+function finish() {
+  if (!S) return;
+  stopTimers();
+  const kind = S.kind, log = S.log.filter(r => r.how !== "abandoned");
+  if (kind === "learn" || !log.length) { S = null; show("setup"); return; }
+  const n = log.length, ok = log.filter(r => r.ok).length, avg = n ? log.reduce((a, r) => a + r.secs, 0) / n : 0;
+  const mins = kind === "sprint" ? settings.sLen : (Date.now() - S.startTs) / 60000;
+  const cpm = kind === "sprint" ? ok / settings.sLen : null;
+  if (S.counted && n) { ST.sessions.push({ ts: Date.now(), kind, n, ok, avg, cpm }); if (ST.sessions.length > 80) ST.sessions.shift(); saveStats(); }
+  const b = bucketsOf(log);
+  let h = `<div class="stamp">${S.label} · session complete</div><div class="big">${ok} / ${n}</div>`;
+  h += `<div class="kpis ${kind === "sprint" ? "four" : ""}"><div><b>${n ? Math.round(ok / n * 100) : 0}%</b><span>Accuracy</span></div><div><b>${fmt(avg, 1)}s</b><span>Avg response</span></div>` +
+    (kind === "sprint" ? `<div><b>${fmt(cpm, 1)}</b><span>Correct / minute</span></div><div><b>${n}</b><span>Attempted</span></div>` : `<div><b>${n}</b><span>Questions</span></div>`) + `</div>`;
+  h += `<h2>What held you back</h2>${diagBar(b)}<p class="rec">${diagnose(b)}</p>`;
+  const by = {};
+  log.forEach(r => { const x = by[r.q.cat] || (by[r.q.cat] = { n: 0, ok: 0, t: 0, par: 0 }); x.n++; if (r.ok) x.ok++; x.t += r.secs; x.par += parFor(r.q); });
+  h += `<h2>By type</h2><table class="t"><tr><th>Type</th><th>Score</th><th>Avg time</th><th>Par</th></tr>` + Object.entries(by).map(([c, x]) => `<tr><td>${CATS[c]}</td><td>${x.ok}/${x.n}</td><td>${fmt(x.t / x.n, 1)}s</td><td>${fmt(x.par / x.n, 0)}s</td></tr>`).join("") + `</table>`;
+  const miss = log.filter(r => !r.ok);
+  h += `<h2>Mistakes${miss.length ? ` (${miss.length})` : ""}</h2>`;
+  h += miss.length ? `<div class="fine" style="margin-top:-4px">Untimed review. Tap one to see the fastest method.</div>` + miss.map(r => `<details class="miss"><summary><div class="p">${r.q.prompt}</div><div class="m">${r.q.sub ? r.q.sub + " · " : ""}you: ${r.given === null ? (r.how === "timeout" ? "time" : "skipped") : ansText(r.q, r.given)} · answer: ${ansText(r.q)}${r.cls.label ? " · " + r.cls.label : ""}</div></summary><details class="sol" open><summary>Fastest solution</summary>${solHTML(r.q, r)}</details></details>`).join("") : `<p class="rec">None.</p>`;
+  S.lastMisses = miss.map(r => r.q);
+  h += `<div class="actions" style="flex-wrap:wrap">` + (miss.length && kind !== "retry" ? `<button class="btn" style="flex-basis:100%" data-act="retryMissed">Retry the ${plural(miss.length, "miss").replace("misss", "misses")} untimed</button>` : "") +
+    `<button class="btn sec" data-act="toSetup">Settings</button><button class="btn flex2" data-act="again">Go again</button></div>`;
+  $("v-summary").innerHTML = h;
+  S.done = true; S.lastKind = kind;
+  show("summary");
+}
+
+/* ---------- library ---------- */
+function skillStatus(id) {
+  const s = ST.skill[id];
+  if (!s || !s.n) return ST.seen[id] ? ["Seen", "blue"] : ["New", ""];
+  const acc = s.ok / s.n, avg = s.tn ? s.t / s.tn : 99;
+  if (s.n >= 10 && acc >= 0.9 && avg <= SK[id].par[1]) return ["Mastered", "good"];
+  if (s.n < 5) return ["Learning", "blue"];
+  if (acc >= 0.75) return ["Solid", "good"];
+  return ["Needs work", "bad"];
+}
+let libFilter = "all";
+function renderLib() {
+  let h = `<div class="fine" style="margin-top:0">Every shortcut the drill teaches. Open one for the rule, why it works and a live example. Learn it untimed, or test yourself with five scored questions.</div>`;
+  h += `<div class="seg" style="margin-top:12px">${[["all", "All"], ["seen", "Seen"], ["work", "Needs work"]].map(([k, l]) => `<button class="${libFilter === k ? "on" : ""}" data-act="libFilter" data-v="${k}">${l}</button>`).join("")}</div>`;
+  for (const cat of Object.keys(CATS)) {
+    const ids = Object.keys(SK).filter(id => SK[id].cat === cat).filter(id => {
+      const [st] = skillStatus(id);
+      return libFilter === "all" || (libFilter === "seen" && st !== "New") || (libFilter === "work" && (st === "Needs work" || st === "Learning"));
+    });
+    if (!ids.length) continue;
+    h += `<h2>${CATS[cat]}</h2>`;
+    h += ids.map(id => {
+      const [st, cl] = skillStatus(id), s = ST.skill[id];
+      const stat = s && s.n ? `${s.n} scored attempts · ${Math.round(s.ok / s.n * 100)}% accurate · ${fmt(s.tn ? s.t / s.tn : 0, 1)}s average (par ${SK[id].par[1]}s at Intermediate)` : "No scored attempts yet.";
+      return `<details class="skill" data-skill="${id}"><summary><span>${SK[id].name}</span><span class="pill ${cl}">${st}</span></summary><div class="skb" id="skb-${id.replace(".", "-")}"><div class="stat">${stat}</div></div></details>`;
+    }).join("");
+  }
+  $("v-lib").innerHTML = h;
+  document.querySelectorAll("details.skill").forEach(d => d.addEventListener("toggle", () => { if (d.open && !d.dataset.loaded) { d.dataset.loaded = 1; fillSkill(d.dataset.skill); } }));
+}
+function fillSkill(id) {
+  const el = $("skb-" + id.replace(".", "-")), q = genQ(SK[id].gen, 1, id), s = ST.skill[id];
+  const top = s && s.labels ? Object.entries(s.labels).sort((a, b) => b[1] - a[1])[0] : null;
+  el.innerHTML = `<div class="remember" style="margin-top:8px"><div class="lbl">Remember this</div>${q.remember}</div><div class="lbl">Why it works</div><p style="margin:0;font-size:15px;color:var(--ink2)">${q.why}</p>
+  <div class="ex" id="ex-${id.replace(".", "-")}">${exHTML(q)}</div>
+  ${top ? `<div class="diag">Most common error here: <b>${top[0]}</b> (${top[1]}×)</div>` : ""}
+  <div class="stat">${el.querySelector(".stat").innerHTML}</div>
+  <div class="actions"><button class="btn sec sm" data-act="newEx" data-v="${id}">New example</button><button class="btn sec sm" data-act="learnSkill" data-v="${id}">Learn</button><button class="btn sm" data-act="testSkill" data-v="${id}">Test me · 5</button></div>`;
+}
+const exHTML = q => `<div class="lbl" style="margin-top:0">Example</div><div class="q">${q.prompt}</div><div class="fine" style="margin-top:2px">${q.sub || ""} → <b style="color:var(--ink)">${ansText(q)}</b></div><ol class="steps">${q.steps.map(s => `<li>${s}</li>`).join("")}</ol>`;
+
+/* ---------- anchors ---------- */
+function renderAnchors() {
+  const fr = [];
+  for (const d of [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 16]) for (let n = 1; n < d; n++) if (gcd(n, d) === 1) fr.push(`<div><span>${n}/${d}</span><span>${fmt(n / d * 100, 2)}%</span></div>`);
+  const yrs = [3, 4, 5, 6, 7], mo = [1.25, 1.5, 2, 2.5, 3, 4, 5];
+  const irrT = `<table class="t"><tr><th>MOIC</th>${yrs.map(y => `<th>${y} yrs</th>`).join("")}</tr>` + mo.map(m => `<tr><td>${m}x</td>${yrs.map(y => `<td>${((Math.pow(m, 1 / y) - 1) * 100).toFixed(1)}%</td>`).join("")}</tr>`).join("") + `</table>`;
+  const ns = [3, 5, 7];
+  const compT = `<table class="t"><tr><th>Rate</th>${ns.map(n => `<th>${n} yrs</th>`).join("")}</tr>` + COMP_R.map(r => `<tr><td>${r}%</td>${ns.map(n => `<td>${Math.pow(1 + r / 100, n).toFixed(2)}x</td>`).join("")}</tr>`).join("") + `</table>`;
+  $("v-anchors").innerHTML = `<div class="fine" style="margin-top:0">Know these cold and most interview math becomes "anchor, then adjust." Every figure is computed live from the formula.</div>
+  <div class="card" style="margin-top:12px"><div class="stamp">Quiz yourself</div><div class="fine" style="margin-top:2px">Untimed recall with the answer after each one. Not scored.</div>
+  <div class="qbtns"><button class="btn sec sm" data-act="quiz" data-v="rcFrac">Fractions</button><button class="btn sec sm" data-act="quiz" data-v="rcIrr">MOIC → IRR</button><button class="btn sec sm" data-act="quiz" data-v="rcComp">Compounding</button><button class="btn sm" data-act="quiz" data-v="all">All three</button></div></div>
+  <h2>Highest-value anchors</h2><ul class="rules">
+  <li><b>2x</b> ≈ ${irrA(2, 3)}% over 3 years, ${irrA(2, 5)}% over 5. <b>3x</b> ≈ ${irrA(3, 3)}% over 3, ${irrA(3, 5)}% over 5.</li>
+  <li><b>(1.10)^5</b> ≈ ${fx2(compAnchor(10, 5))}x · <b>(1.15)^5</b> ≈ ${fx2(compAnchor(15, 5))}x · <b>(1.20)^5</b> ≈ ${fx2(compAnchor(20, 5))}x</li>
+  <li><b>Eighths</b> step by 12.5%. <b>Sixteenths</b> step by 6.25%. <b>1/7</b> ≈ 14.29%, <b>1/9</b> ≈ 11.11%, <b>1/12</b> ≈ 8.33%.</li>
+  <li><b>100 bps</b> of margin = 1% of revenue in EBITDA.</li></ul>
+  <h2>Fractions → %</h2><div class="fracgrid">${fr.join("")}</div>
+  <h2>MOIC → IRR</h2><div class="fine" style="margin-top:-4px">IRR = MOIC^(1/years) − 1. Assumes one cash flow in and one out, with no interim dividends.</div>${irrT}
+  <h2>Compounding factor (1 + r)^n</h2>${compT}
+  <h2>Rules of thumb (approximations)</h2><ul class="rules">
+  <li><b>Rule of 72:</b> doubling time ≈ 72 ÷ rate. Best between about 6% and 12%; at 25% it gives 2.9 years vs ${fmt(Math.log(2) / Math.log(1.25), 1)} exact.</li>
+  <li><b>Rule of 115:</b> tripling time ≈ 115 ÷ rate. <b>Rule of 144:</b> quadrupling ≈ 144 ÷ rate.</li>
+  <li><b>Two-term compounding:</b> (1 + r)^n ≈ 1 + n·r + [n(n−1)/2]·r². Good while n·r is under ~40%; beyond that it understates.</li>
+  <li><b>Flip trick:</b> x% of y = y% of x. 16% of 25 = 25% of 16 = 4.</li>
+  <li><b>Interpolating IRR:</b> a straight line between two anchors slightly understates the true IRR.</li></ul>`;
+}
+
+/* ---------- progress ---------- */
+function spark(vals, max, suffix) {
+  if (vals.length < 2) return `<div class="fine">Needs at least two sessions.</div>`;
+  const W = 320, H = 64, p = 6, mx = max || Math.max(...vals) || 1;
+  const pts = vals.map((v, i) => [p + i * (W - 2 * p) / (vals.length - 1), H - p - v / mx * (H - 2 * p)]);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="#1f4fe0" stroke-width="2" points="${pts.map(x => x.join(",")).join(" ")}"/>${pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.5" fill="#1f4fe0"/>`).join("")}</svg><div class="fine">Last ${vals.length}: ${vals.map(v => fmt(v, 1) + suffix).slice(-5).join(" → ")}</div>`;
+}
+let resetArm = false;
+function renderProgress() {
+  const cats = Object.keys(CATS), tot = cats.reduce((a, c) => a + (ST.cat[c] ? ST.cat[c].n : 0), 0);
+  const ok = cats.reduce((a, c) => a + (ST.cat[c] ? ST.cat[c].ok : 0), 0);
+  const tsum = cats.reduce((a, c) => a + (ST.cat[c] ? ST.cat[c].t : 0), 0), tn = cats.reduce((a, c) => a + (ST.cat[c] ? ST.cat[c].tn : 0), 0);
+  const b = emptyB(); cats.forEach(c => { if (ST.cat[c] && ST.cat[c].b) for (const k in b) b[k] += ST.cat[c].b[k]; });
+  let h = `<div class="fine" style="margin-top:0">Scored attempts from Practice, Sprint, Interview and Review, saved on this device. Learn mode is never counted.</div>`;
+  h += `<div class="kpis"><div><b>${tot}</b><span>Answered</span></div><div><b>${tot ? Math.round(ok / tot * 100) : 0}%</b><span>Accuracy</span></div><div><b>${tn ? fmt(tsum / tn, 1) : "—"}s</b><span>Avg time</span></div></div>`;
+  h += `<h2>What's holding you back</h2>${diagBar(b)}<p class="rec">${diagnose(b)}</p>`;
+  h += `<h2>By category</h2><table class="t"><tr><th>Type</th><th>Tries</th><th>Acc.</th><th>Avg</th><th>Main issue</th></tr>` + cats.map(c => {
+    const s = ST.cat[c];
+    if (!s || !s.n) return `<tr><td>${CATS[c]}${settings.diff === "auto" ? ` <span class="pill">L${(ST.levels[c] && ST.levels[c].lv) || 1}</span>` : ""}</td><td>0</td><td>—</td><td>—</td><td>—</td></tr>`;
+    const top = Object.entries(s.b || emptyB()).sort((x, y) => y[1] - x[1])[0];
+    return `<tr><td>${CATS[c]}${settings.diff === "auto" ? ` <span class="pill">L${(ST.levels[c] && ST.levels[c].lv) || 1}</span>` : ""}</td><td>${s.n}</td><td>${Math.round(s.ok / s.n * 100)}%</td><td>${s.tn ? fmt(s.t / s.tn, 1) + "s" : "—"}</td><td>${top && top[1] ? top[0][0].toUpperCase() + top[0].slice(1) : "—"}</td></tr>`;
+  }).join("") + `</table>`;
+  const errs = [];
+  const GENERIC = ["Method broke down", "Close: arithmetic slip", "Skipped: no approach", "Ran out of time"];
+  for (const [id, s] of Object.entries(ST.skill)) for (const [l, n] of Object.entries(s.labels || {})) if (!GENERIC.includes(l)) errs.push([l, n, id]);
+  errs.sort((a, c) => c[1] - a[1]);
+  h += `<h2>Most common errors</h2>` + (errs.length ? `<table class="t"><tr><th>Error</th><th>Shortcut</th><th>×</th></tr>` + errs.slice(0, 6).map(([l, n, id]) => `<tr><td>${l}</td><td><button class="link" data-act="learnSkill" data-v="${id}">${SK[id] ? SK[id].name : id}</button></td><td>${n}</td></tr>`).join("") + `</table>` : `<div class="fine">No named errors yet. These are specific traps, like dividing growth by the ending value or forgetting to subtract debt. General misses show up in the bar above.</div>`);
+  const ses = ST.sessions.slice(-20);
+  h += `<h2>Accuracy by session</h2>` + spark(ses.map(s => s.n ? s.ok / s.n * 100 : 0), 100, "%");
+  const sp = ST.sessions.filter(s => s.kind === "sprint").slice(-20);
+  if (sp.length) h += `<h2>Sprint pace (correct / minute)</h2>` + spark(sp.map(s => s.cpm || 0), 0, "");
+  const due = dueItems().length;
+  h += `<h2>Review queue</h2><div class="fine" style="margin-top:-4px">${plural(REV.length, "question")} in the queue · ${due} due now. A correct review pushes the next one out (1 → 3 → 7 → 21 days); a miss brings it back within hours.</div>` + (due ? `<button class="btn sec sm" style="margin-top:8px" data-act="startReview">Review ${due} now</button>` : "");
+  h += `<button class="btn ghost" style="margin-top:20px;width:100%" data-act="reset">${resetArm ? "Tap again to erase all progress" : "Reset progress"}</button>`;
+  $("v-progress").innerHTML = h;
+}
+
+/* ---------- actions ---------- */
+const ACT = {
+  tab: el => { if (S && !S.done && el.dataset.v === "train") return show("drill"); show({ train: "setup", lib: "lib", anchors: "anchors", progress: "progress" }[el.dataset.v]); },
+  set: el => { const k = el.dataset.k, v = el.dataset.v; settings[k] = ["pLen", "sLen", "iCases", "iTimer"].includes(k) ? +v : v; saveSettings(); renderSetup(); },
+  toggle: el => { settings[el.dataset.k] = !settings[el.dataset.k]; saveSettings(); renderSetup(); },
+  chip: el => { const k = el.dataset.k, v = el.dataset.v; settings[k] = settings[k].includes(v) ? settings[k].filter(x => x !== v) : settings[k].concat(v); saveSettings(); renderSetup(); },
+  allCats: () => { settings.cats = Object.keys(CATS); saveSettings(); renderSetup(); },
+  noCats: () => { settings.cats = []; saveSettings(); renderSetup(); },
+  start: () => start(settings.mode),
+  startReview: () => { const items = dueItems().slice(0, 20); if (items.length) start("review", { presets: items, label: "Review" }); },
+  endSession: () => { if (!S) return show("setup"); if (S.kind === "interview" && !$("v-debrief").classList.contains("hidden")) return finish(); finish(); },
+  hint: () => {
+    if (S.hints >= S.q.hints.length) return;
+    S.hints++;
+    $("dHints").innerHTML = S.q.hints.slice(0, S.hints).map((x, i) => `<div class="hint"><b>Hint ${i + 1}.</b> ${x}</div>`).join("");
+    const b = $("hintBtn"); if (S.hints >= S.q.hints.length) { b.textContent = "No more hints"; b.disabled = true; } else b.textContent = `Hint ${S.hints + 1} of ${S.q.hints.length}`;
+  },
+  reveal: () => submit("skip"),
+  talkDone: () => talkDone(),
+  next: () => primaryNext(),
+  similar: () => { const q = similar(S.q); if (S.presets) S.presets.unshift(q); else S.override = q; nextQ(); },
+  flag: el => { if (S.flagged) return; S.flagged = true; const it = addReview(S.q); el.textContent = it ? "★ Flagged" : "★ Queued"; el.disabled = true; },
+  nextCase: () => { S.iv.ci++; S.iv.si = 0; show("drill"); nextQ(); },
+  retryMissed: () => { const m = S.lastMisses || []; if (m.length) start("retry", { presets: m, label: "Retry" }); },
+  again: () => { const k = S && S.lastKind; start(k === "retry" || k === "review" ? settings.mode : (k || settings.mode), S && S.focus ? { focus: S.focus, total: S.total } : {}); },
+  toSetup: () => { S = null; show("setup"); },
+  libFilter: el => { libFilter = el.dataset.v; renderLib(); },
+  newEx: el => { const id = el.dataset.v; $("ex-" + id.replace(".", "-")).innerHTML = exHTML(genQ(SK[id].gen, rand(1, 2), id)); },
+  learnSkill: el => start("learn", { focus: { skill: el.dataset.v }, label: "Learn" }),
+  testSkill: el => start("practice", { focus: { skill: el.dataset.v }, total: 5, label: "Skill test" }),
+  quiz: el => start("learn", { focus: { gens: el.dataset.v === "all" ? ["rcFrac", "rcIrr", "rcComp"] : [el.dataset.v] }, label: "Anchor quiz" }),
+  reset: () => {
+    if (!resetArm) { resetArm = true; renderProgress(); setTimeout(() => { resetArm = false; if (!$("v-progress").classList.contains("hidden")) renderProgress(); }, 3000); return; }
+    ST = { cat: {}, skill: {}, sessions: [], levels: {}, seen: {} }; REV = []; saveStats(); saveRev(); resetArm = false; renderProgress();
+  }
+};
+document.addEventListener("click", e => {
+  const k = e.target.closest("#pad button");
+  if (k) { press(k.dataset.k); return; }
+  const a = e.target.closest("[data-act]");
+  if (a && ACT[a.dataset.act]) { e.preventDefault(); ACT[a.dataset.act](a); }
+});
+document.addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!S || $("v-drill").classList.contains("hidden")) return;
+  let k = null;
+  if (/^\d$/.test(e.key)) k = e.key;
+  else if (e.key === ".") k = ".";
+  else if (e.key === "-") k = "neg";
+  else if (e.key === "Backspace") k = "del";
+  else if (e.key === "Enter") k = "go";
+  else if (e.key === "Escape") k = "skip";
+  else if ((e.key === "h" || e.key === "H") && S.kind === "learn" && !S.answered) { e.preventDefault(); ACT.hint(); return; }
+  if (k) { e.preventDefault(); press(k); }
+});
+show("setup");
+
+if ("serviceWorker" in navigator && location.protocol === "https:") { window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
+
+</script>
+</body>
+</html>
